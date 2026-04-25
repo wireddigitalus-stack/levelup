@@ -51,35 +51,55 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(
+    const requestBody = JSON.stringify({
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `${SYSTEM_PROMPT}\n\nHere is the shooter's current data context:\n${context}\n\nShooter's question: ${prompt}`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 1024,
+      },
+    });
+
+    // Try gemini-2.0-flash first, fall back to gemini-1.5-flash
+    let response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `${SYSTEM_PROMPT}\n\nHere is the shooter's current data context:\n${context}\n\nShooter's question: ${prompt}`,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1024,
-          },
-        }),
+        body: requestBody,
       }
     );
 
     if (!response.ok) {
+      // Try fallback model
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: requestBody,
+        }
+      );
+    }
+
+    if (!response.ok) {
       const errorData = await response.text();
       console.error("Gemini API error:", errorData);
+      let errorMsg = `Gemini API error (${response.status})`;
+      try {
+        const parsed = JSON.parse(errorData);
+        errorMsg = parsed?.error?.message || errorMsg;
+      } catch {}
       return NextResponse.json(
-        { error: `Gemini API error: ${response.status}` },
+        { error: errorMsg },
         { status: response.status }
       );
     }

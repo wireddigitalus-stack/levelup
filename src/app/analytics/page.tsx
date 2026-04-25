@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <main className="p-4 max-w-md mx-auto space-y-5 pt-8 pb-28">
+    <main className="p-4 max-w-md mx-auto space-y-5 pt-8 pb-36">
       <header>
         <h1 className="text-3xl font-bold tracking-tight">
           <span className="text-white font-extrabold">Level</span>
@@ -325,7 +325,7 @@ export default function AnalyticsPage() {
             <Brain className="w-4 h-4 text-black" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">LevelUP AI</h3>
+            <h3 className="font-semibold text-sm">Ask Spotter</h3>
             <p className="text-[10px] text-textSecondary">Powered by Gemini • Ask your data anything</p>
           </div>
         </div>

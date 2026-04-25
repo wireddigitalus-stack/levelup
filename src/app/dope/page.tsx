@@ -41,7 +41,7 @@ export default function DopePage() {
   };
 
   return (
-    <main className="p-4 max-w-md mx-auto space-y-6 pt-6 pb-28">
+    <main className="p-4 max-w-md mx-auto space-y-6 pt-6 pb-36">
       {/* Back button */}
       <Link
         href="/"

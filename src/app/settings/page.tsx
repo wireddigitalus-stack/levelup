@@ -109,7 +109,7 @@ export default function SettingsPage() {
   );
 
   return (
-    <main className="p-4 max-w-md mx-auto space-y-6 pt-6 pb-28">
+    <main className="p-4 max-w-md mx-auto space-y-6 pt-6 pb-36">
       {/* Scanning animation keyframes */}
       <style jsx global>{`
         @keyframes radar-ping {
