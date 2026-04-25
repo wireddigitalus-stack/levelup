@@ -98,7 +98,7 @@ export default function SessionsPage() {
                     {session.windSpeed} mph {session.windDirection}
                   </div>
                 )}
-                <div className="text-[10px] text-textSecondary/60">
+                <div className="text-xs text-textSecondary/60">
                   DA: {session.densityAltitude}ft
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function SessionsPage() {
                 {lots.map((lot) => (
                   <span
                     key={lot!.id}
-                    className="text-[10px] bg-[#2C2C2E] px-2 py-1 rounded-full font-medium"
+                    className="text-xs bg-[#2C2C2E] px-2 py-1 rounded-full font-medium"
                   >
                     {lot!.brand} {lot!.model} #{lot!.lotNumber}
                   </span>
@@ -116,13 +116,13 @@ export default function SessionsPage() {
                 {sessionRifles.map((r) => (
                   <span
                     key={r!.id}
-                    className="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded-full font-medium"
+                    className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium"
                   >
                     {r!.make} {r!.model}
                   </span>
                 ))}
                 {coldBoreShots > 0 && (
-                  <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded-full font-medium">
+                  <span className="text-xs bg-blue-500/10 text-blue-400 px-2 py-1 rounded-full font-medium">
                     {coldBoreShots} cold bore
                   </span>
                 )}

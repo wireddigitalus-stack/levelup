@@ -13,6 +13,7 @@ import PageHeader from "@/components/layout/PageHeader";
 
 export default function DashboardPage() {
   const {
+    user,
     rifles,
     ammo,
     sessions,
@@ -72,6 +73,9 @@ export default function DashboardPage() {
       <header className="flex justify-between items-end mb-6">
         <div>
           <PageHeader title="Dashboard" />
+          <p className="text-xs text-textSecondary mt-1 ml-1">
+            {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening"}, {user.fullName.split(" ")[0]}
+          </p>
         </div>
         <Link href="/settings" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center active:scale-95 transition-transform">
           <Settings2 className="w-5 h-5 text-textPrimary" />
@@ -117,23 +121,23 @@ export default function DashboardPage() {
           <p className="text-4xl font-black" style={{ color: grade.color }}>
             {grade.grade}
           </p>
-          <p className="text-[10px] text-textSecondary mt-1">{grade.score}/100</p>
+          <p className="text-xs text-textSecondary mt-1">{grade.score}/100</p>
         </div>
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A]">
           <div className="flex items-center gap-1.5 mb-1">
             <Activity className="w-3.5 h-3.5 text-green-500" />
-            <span className="text-[10px] text-textSecondary font-medium">SD</span>
+            <span className="text-xs text-textSecondary font-medium">SD</span>
           </div>
           <p className="text-2xl font-bold tracking-tight">{sd}</p>
-          <p className="text-[10px] text-textSecondary mt-0.5">{shotCount} shots</p>
+          <p className="text-xs text-textSecondary mt-0.5">{shotCount} shots</p>
         </div>
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A]">
           <div className="flex items-center gap-1.5 mb-1">
             <Target className="w-3.5 h-3.5 text-orange-500" />
-            <span className="text-[10px] text-textSecondary font-medium">ES</span>
+            <span className="text-xs text-textSecondary font-medium">ES</span>
           </div>
           <p className="text-2xl font-bold tracking-tight">{es}</p>
-          <p className="text-[10px] text-textSecondary mt-0.5">{shotCount} shots</p>
+          <p className="text-xs text-textSecondary mt-0.5">{shotCount} shots</p>
         </div>
       </div>
 
@@ -207,7 +211,7 @@ export default function DashboardPage() {
                 <p className="text-xl font-bold" style={{ color: probColor }}>
                   {prob}%
                 </p>
-                <p className="text-[10px] text-textSecondary mt-0.5">{d}y</p>
+                <p className="text-xs text-textSecondary mt-0.5">{d}y</p>
               </div>
             );
           })}

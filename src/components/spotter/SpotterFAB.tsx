@@ -230,7 +230,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
               </div>
               <div>
                 <h3 className="font-bold text-sm">Ask Spotter</h3>
-                <p className="text-[10px] text-green-400 font-medium">Your ballistics analyst • AI-powered</p>
+                <p className="text-xs text-green-400 font-medium">Your ballistics analyst • AI-powered</p>
               </div>
             </div>
             <button
@@ -282,7 +282,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
                 {msg.role === "spotter" && (
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Crosshair className="w-3 h-3 text-green-400" />
-                    <span className="text-[10px] text-green-400 font-bold">SPOTTER</span>
+                    <span className="text-xs text-green-400 font-bold">SPOTTER</span>
                   </div>
                 )}
                 <div className="whitespace-pre-wrap text-[13px]">{msg.text}</div>
@@ -294,7 +294,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
               <div className="mr-auto bg-[#2C2C2E] rounded-2xl rounded-bl-md px-4 py-3 max-w-[80%]">
                 <div className="flex items-center gap-2">
                   <Crosshair className="w-3 h-3 text-green-400 animate-spin" />
-                  <span className="text-[10px] text-green-400 font-bold">SPOTTER</span>
+                  <span className="text-xs text-green-400 font-bold">SPOTTER</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-2">
                   <div className="w-2 h-2 rounded-full bg-green-400 animate-bounce" style={{ animationDelay: "0ms" }} />

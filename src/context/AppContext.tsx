@@ -95,69 +95,92 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedRifleId, setSelectedRifleId] = useState("");
   const [selectedAmmoId, setSelectedAmmoId] = useState("");
 
-  // Load persisted data on mount (client only)
+  // Load persisted data on mount — tries Supabase first, falls back to localStorage
   useEffect(() => {
-    const loadedRifles = ds.getRifles();
-    const loadedAmmo = ds.getAmmoLots();
-    const loadedSessions = ds.getSessions();
-    const loadedShots = ds.getShots();
-    const loadedSettings = ds.getSettings();
-    const loadedUser = ds.getUser();
+    let cancelled = false;
 
-    setUser(loadedUser);
-    setRifles(loadedRifles);
-    setAmmo(loadedAmmo);
-    setSessions(loadedSessions);
-    setShots(loadedShots);
-    setSettings(loadedSettings);
+    async function loadData() {
+      try {
+        const [loadedRifles, loadedAmmo, loadedSessions, loadedShots, loadedSettings] =
+          await Promise.all([
+            ds.loadRifles(),
+            ds.loadAmmoLots(),
+            ds.loadSessions(),
+            ds.loadShots(),
+            ds.loadSettings(),
+          ]);
 
-    // Default selections
-    if (loadedRifles.length > 0) setSelectedRifleId(loadedRifles[0].id);
-    if (loadedAmmo.length > 0) setSelectedAmmoId(loadedAmmo[0].id);
+        if (cancelled) return;
 
-    setIsReady(true);
+        const loadedUser = ds.getUser();
+        setUser(loadedUser);
+        setRifles(loadedRifles);
+        setAmmo(loadedAmmo);
+        setSessions(loadedSessions);
+        setShots(loadedShots);
+        setSettings(loadedSettings);
+
+        if (loadedRifles.length > 0) setSelectedRifleId(loadedRifles[0].id);
+        if (loadedAmmo.length > 0) setSelectedAmmoId(loadedAmmo[0].id);
+      } catch (err) {
+        console.warn("[AppContext] Supabase load failed, using localStorage:", err);
+        // Fall back to synchronous localStorage reads
+        if (cancelled) return;
+        setUser(ds.getUser());
+        setRifles(ds.getRifles());
+        setAmmo(ds.getAmmoLots());
+        setSessions(ds.getSessions());
+        setShots(ds.getShots());
+        setSettings(ds.getSettings());
+      }
+
+      if (!cancelled) setIsReady(true);
+    }
+
+    loadData();
+    return () => { cancelled = true; };
   }, []);
 
   // ── Rifle mutations ───────────────────────────────────────
-  const addRifle = (rifle: RifleProfile) => {
-    const updated = ds.addRifle(rifle);
+  const addRifle = async (rifle: RifleProfile) => {
+    const updated = await ds.addRifle(rifle);
     setRifles(updated);
   };
 
-  const updateRifle = (rifle: RifleProfile) => {
-    const updated = ds.updateRifle(rifle);
+  const updateRifle = async (rifle: RifleProfile) => {
+    const updated = await ds.updateRifle(rifle);
     setRifles(updated);
   };
 
-  const deleteRifle = (rifleId: string) => {
-    const updated = ds.deleteRifle(rifleId);
+  const deleteRifle = async (rifleId: string) => {
+    const updated = await ds.deleteRifle(rifleId);
     setRifles(updated);
   };
 
   // ── Ammo mutations ────────────────────────────────────────
-  const addAmmoLot = (lot: AmmoLot) => {
-    const updated = ds.addAmmoLot(lot);
+  const addAmmoLot = async (lot: AmmoLot) => {
+    const updated = await ds.addAmmoLot(lot);
     setAmmo(updated);
   };
 
-  const updateAmmoLot = (lot: AmmoLot) => {
-    const updated = ds.updateAmmoLot(lot);
+  const updateAmmoLot = async (lot: AmmoLot) => {
+    const updated = await ds.updateAmmoLot(lot);
     setAmmo(updated);
   };
 
-  const deleteAmmoLot = (lotId: string) => {
-    const updated = ds.deleteAmmoLot(lotId);
+  const deleteAmmoLot = async (lotId: string) => {
+    const updated = await ds.deleteAmmoLot(lotId);
     setAmmo(updated);
   };
 
   // ── Shot & Session mutations ──────────────────────────────
-  const addShot = (shot: ShotLog) => {
-    const updated = ds.addShot(shot);
+  const addShot = async (shot: ShotLog) => {
+    const updated = await ds.addShot(shot);
     setShots(updated);
   };
 
-  const addSession = (session: Session) => {
-    const updated = ds.addSession(session);
+  const addSession = async (session: Session) => {
+    const updated = await ds.addSession(session);
     setSessions(updated);
   };
 

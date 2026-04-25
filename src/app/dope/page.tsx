@@ -117,17 +117,17 @@ export default function DopePage() {
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] text-center py-4">
           <Gauge className="w-4 h-4 text-green-500 mx-auto mb-1" />
           <p className="text-xl font-bold">{avgMV}</p>
-          <p className="text-[10px] text-textSecondary">Avg MV (fps)</p>
+          <p className="text-xs text-textSecondary">Avg MV (fps)</p>
         </div>
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] text-center py-4">
           <Zap className="w-4 h-4 text-yellow-500 mx-auto mb-1" />
           <p className="text-xl font-bold">{transonic}</p>
-          <p className="text-[10px] text-textSecondary">Transonic (yds)</p>
+          <p className="text-xs text-textSecondary">Transonic (yds)</p>
         </div>
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] text-center py-4">
           <Crosshair className="w-4 h-4 text-primary mx-auto mb-1" />
           <p className="text-xl font-bold">{zeroRange}</p>
-          <p className="text-[10px] text-textSecondary">Zero (yds)</p>
+          <p className="text-xs text-textSecondary">Zero (yds)</p>
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function DopePage() {
         </div>
 
         {/* Table Header */}
-        <div className="grid grid-cols-6 text-[10px] font-semibold text-textSecondary uppercase tracking-wider px-3 py-2 bg-[#1A1A1C] border-b border-[#2C2C2E]">
+        <div className="grid grid-cols-6 text-xs font-semibold text-textSecondary uppercase tracking-wider px-3 py-2 bg-[#1A1A1C] border-b border-[#2C2C2E]">
           <div>Range</div>
           <div className="text-center">Vel</div>
           <div className="text-center">Drop</div>
@@ -171,7 +171,7 @@ export default function DopePage() {
           >
             <div className="font-semibold flex items-center gap-1">
               {point.rangeYds}
-              <span className="text-[10px] text-textSecondary">y</span>
+              <span className="text-xs text-textSecondary">y</span>
               {!point.isSuperSonic && point.rangeYds > 0 && (
                 <Zap className="w-2.5 h-2.5 text-yellow-500" />
               )}
@@ -200,7 +200,7 @@ export default function DopePage() {
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-3 text-[10px] text-textSecondary px-1">
+      <div className="flex flex-wrap gap-3 text-xs text-textSecondary px-1">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-green-500" />
           Zero range

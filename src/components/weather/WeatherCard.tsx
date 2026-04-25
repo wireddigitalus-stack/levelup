@@ -143,7 +143,7 @@ export default function WeatherCard() {
           {getWeatherIcon(weather.icon)}
           <div>
             <p className="text-3xl font-bold tracking-tight">{weather.temp}°<span className="text-lg text-textSecondary">F</span></p>
-            <p className="text-[10px] text-textSecondary capitalize">{weather.condition}</p>
+            <p className="text-xs text-textSecondary capitalize">{weather.condition}</p>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export default function WeatherCard() {
           <p className="text-[9px] text-textSecondary uppercase tracking-wider font-semibold">Density Alt</p>
           <p className={`text-2xl font-black font-mono ${daColor}`}>
             {weather.densityAltitude.toLocaleString()}
-            <span className="text-[10px] font-normal text-textSecondary"> ft</span>
+            <span className="text-xs font-normal text-textSecondary"> ft</span>
           </p>
         </div>
       </div>

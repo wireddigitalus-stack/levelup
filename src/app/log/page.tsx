@@ -224,7 +224,7 @@ export default function LogShotPage() {
           </div>
           <div className="text-left">
             <p className="font-bold text-sm">Scan Data Sheet</p>
-            <p className="text-[11px] text-textSecondary">Photograph your handwritten sheet — Spotter reads it instantly</p>
+            <p className="text-xs text-textSecondary">Photograph your handwritten sheet — Spotter reads it instantly</p>
           </div>
         </button>
       )}
@@ -235,7 +235,7 @@ export default function LogShotPage() {
             <Crosshair className="w-5 h-5 text-green-400 animate-spin" />
             <div>
               <p className="font-bold text-sm text-green-400">Spotter is Reading...</p>
-              <p className="text-[10px] text-textSecondary">Extracting handwritten data via AI vision</p>
+              <p className="text-xs text-textSecondary">Extracting handwritten data via AI vision</p>
             </div>
           </div>
           {scanImage && (
@@ -266,7 +266,7 @@ export default function LogShotPage() {
               <CheckCircle2 className="w-5 h-5 text-green-400" />
               <p className="font-bold text-sm">Sheet Scanned</p>
             </div>
-            <span className={clsx("text-[10px] font-bold uppercase tracking-wider", confidenceColor(scanResult.confidence))}>
+            <span className={clsx("text-xs font-bold uppercase tracking-wider", confidenceColor(scanResult.confidence))}>
               {scanResult.confidence} confidence
             </span>
           </div>
@@ -274,7 +274,7 @@ export default function LogShotPage() {
           {/* Extracted Header */}
           {(scanResult.header.rifle || scanResult.header.date) && (
             <div className="bg-[#0A0A0A] rounded-xl p-3 space-y-1">
-              <p className="text-[10px] text-textSecondary font-bold uppercase tracking-wider mb-2">Session Info</p>
+              <p className="text-xs text-textSecondary font-bold uppercase tracking-wider mb-2">Session Info</p>
               <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
                 {scanResult.header.rifle && <p><span className="text-textSecondary">Rifle:</span> {scanResult.header.rifle}</p>}
                 {scanResult.header.date && <p><span className="text-textSecondary">Date:</span> {scanResult.header.date}</p>}
@@ -287,7 +287,7 @@ export default function LogShotPage() {
           {/* Extracted Ammo */}
           {(scanResult.ammo.make || scanResult.ammo.lotNumber) && (
             <div className="bg-[#0A0A0A] rounded-xl p-3">
-              <p className="text-[10px] text-textSecondary font-bold uppercase tracking-wider mb-2">Ammo</p>
+              <p className="text-xs text-textSecondary font-bold uppercase tracking-wider mb-2">Ammo</p>
               <p className="text-sm font-medium">
                 {scanResult.ammo.make} {scanResult.ammo.type}
                 {scanResult.ammo.lotNumber && <span className="text-textSecondary"> • Lot #{scanResult.ammo.lotNumber}</span>}
@@ -298,7 +298,7 @@ export default function LogShotPage() {
           {/* Extracted Rounds */}
           {scanResult.rounds.length > 0 && (
             <div className="space-y-2">
-              <p className="text-[10px] text-textSecondary font-bold uppercase tracking-wider">Rounds Data</p>
+              <p className="text-xs text-textSecondary font-bold uppercase tracking-wider">Rounds Data</p>
               <div className="overflow-x-auto -mx-1">
                 <table className="w-full text-xs">
                   <thead>
@@ -329,9 +329,9 @@ export default function LogShotPage() {
           {/* Warnings */}
           {scanResult.warnings.length > 0 && (
             <div className="bg-yellow-500/10 rounded-xl p-3">
-              <p className="text-[10px] text-yellow-400 font-bold uppercase tracking-wider mb-1">⚠ OCR Warnings</p>
+              <p className="text-xs text-yellow-400 font-bold uppercase tracking-wider mb-1">⚠ OCR Warnings</p>
               {scanResult.warnings.map((w, i) => (
-                <p key={i} className="text-[11px] text-yellow-400/80">• {w}</p>
+                <p key={i} className="text-xs text-yellow-400/80">• {w}</p>
               ))}
             </div>
           )}
@@ -364,7 +364,7 @@ export default function LogShotPage() {
           </div>
           <div className="text-left">
             <p className="font-bold text-sm">Snap Chrono</p>
-            <p className="text-[11px] text-textSecondary">Photograph your Garmin / LabRadar screen — AI reads the FPS</p>
+            <p className="text-xs text-textSecondary">Photograph your Garmin / LabRadar screen — AI reads the FPS</p>
           </div>
         </button>
       )}
@@ -375,7 +375,7 @@ export default function LogShotPage() {
             <Gauge className="w-5 h-5 text-purple-400 animate-pulse" />
             <div>
               <p className="font-bold text-sm text-purple-400">Reading Chrono Screen...</p>
-              <p className="text-[10px] text-textSecondary">Extracting velocity data via AI vision</p>
+              <p className="text-xs text-textSecondary">Extracting velocity data via AI vision</p>
             </div>
           </div>
           {chronoImage && (
@@ -406,7 +406,7 @@ export default function LogShotPage() {
               <CheckCircle2 className="w-5 h-5 text-purple-400" />
               <p className="font-bold text-sm">Chrono Read Complete</p>
             </div>
-            <span className={clsx("text-[10px] font-bold uppercase tracking-wider", confidenceColor(chronoResult.confidence))}>
+            <span className={clsx("text-xs font-bold uppercase tracking-wider", confidenceColor(chronoResult.confidence))}>
               {chronoResult.confidence} confidence
             </span>
           </div>
@@ -414,10 +414,10 @@ export default function LogShotPage() {
           {/* Device & View */}
           <div className="bg-[#0A0A0A] rounded-xl p-3 flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-textSecondary">Device Detected</p>
+              <p className="text-xs text-textSecondary">Device Detected</p>
               <p className="text-sm font-medium">{chronoResult.device}</p>
             </div>
-            <span className="text-[10px] text-textSecondary bg-[#2C2C2E] px-2 py-0.5 rounded-full">{chronoResult.view.replace("_", " ")}</span>
+            <span className="text-xs text-textSecondary bg-[#2C2C2E] px-2 py-0.5 rounded-full">{chronoResult.view.replace("_", " ")}</span>
           </div>
 
           {/* Summary Stats */}
@@ -447,7 +447,7 @@ export default function LogShotPage() {
           {/* Individual Shots */}
           {chronoResult.shots.length > 0 && (
             <div className="bg-[#0A0A0A] rounded-xl p-3">
-              <p className="text-[10px] text-textSecondary font-bold uppercase tracking-wider mb-2">Shot String</p>
+              <p className="text-xs text-textSecondary font-bold uppercase tracking-wider mb-2">Shot String</p>
               <div className="flex flex-wrap gap-2">
                 {chronoResult.shots.map((s) => (
                   <div key={s.round} className="flex items-center gap-1.5 bg-[#1C1C1E] rounded-lg px-2.5 py-1.5">
@@ -463,9 +463,9 @@ export default function LogShotPage() {
           {/* Warnings */}
           {chronoResult.warnings.length > 0 && (
             <div className="bg-yellow-500/10 rounded-xl p-3">
-              <p className="text-[10px] text-yellow-400 font-bold uppercase tracking-wider mb-1">⚠ Read Warnings</p>
+              <p className="text-xs text-yellow-400 font-bold uppercase tracking-wider mb-1">⚠ Read Warnings</p>
               {chronoResult.warnings.map((w, i) => (
-                <p key={i} className="text-[11px] text-yellow-400/80">• {w}</p>
+                <p key={i} className="text-xs text-yellow-400/80">• {w}</p>
               ))}
             </div>
           )}
@@ -493,6 +493,7 @@ export default function LogShotPage() {
           garminState !== "idle" ? "border border-blue-500/30 bg-blue-500/5" :
           "bg-[#1C1C1E] hover:bg-[#2C2C2E]"
         }`}>
+          <span className="absolute top-2 right-2 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 z-20">Demo</span>
           {garminState === "scanning" && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent animate-pulse" />}
           <div className="flex items-center gap-2 relative z-10">
             {garminState === "idle" && <Bluetooth className="w-4 h-4 text-primary" />}
@@ -520,6 +521,7 @@ export default function LogShotPage() {
           kestrelState !== "idle" ? "border border-cyan-500/30 bg-cyan-500/5" :
           "bg-[#1C1C1E] hover:bg-[#2C2C2E]"
         }`}>
+          <span className="absolute top-2 right-2 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 z-20">Demo</span>
           {kestrelState === "scanning" && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent animate-pulse" />}
           <div className="flex items-center gap-2 relative z-10">
             {kestrelState === "idle" && <Wind className="w-4 h-4 text-primary" />}
@@ -626,17 +628,17 @@ export default function LogShotPage() {
           <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-wider ml-1">Group Spread (inches)</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] text-textSecondary ml-1 block mb-1">V-Spread (Vertical)</label>
+              <label className="text-xs text-textSecondary ml-1 block mb-1">V-Spread (Vertical)</label>
               <input type="number" step="0.01" inputMode="decimal" className="ios-input font-mono" placeholder="0.00" value={vSpread} onChange={(e) => setVSpread(e.target.value)} />
             </div>
             <div>
-              <label className="text-[10px] text-textSecondary ml-1 block mb-1">H-Spread (Horizontal)</label>
+              <label className="text-xs text-textSecondary ml-1 block mb-1">H-Spread (Horizontal)</label>
               <input type="number" step="0.01" inputMode="decimal" className="ios-input font-mono" placeholder="0.00" value={hSpread} onChange={(e) => setHSpread(e.target.value)} />
             </div>
           </div>
           {vSpread && hSpread && Number(hSpread) > 0 && (
             <div className="bg-[#0A0A0A] rounded-xl px-3 py-2 flex items-center justify-between">
-              <span className="text-[10px] text-textSecondary">V/H Ratio</span>
+              <span className="text-xs text-textSecondary">V/H Ratio</span>
               <span className={`text-sm font-bold font-mono ${Number(vSpread)/Number(hSpread) > 2 ? 'text-red-400' : Number(vSpread)/Number(hSpread) > 1.3 ? 'text-yellow-400' : 'text-green-400'}`}>
                 {(Number(vSpread)/Number(hSpread)).toFixed(2)}x
               </span>
@@ -661,11 +663,11 @@ export default function LogShotPage() {
           <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-wider ml-1">Wind Conditions</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] text-textSecondary ml-1 block mb-1">Speed (MPH)</label>
+              <label className="text-xs text-textSecondary ml-1 block mb-1">Speed (MPH)</label>
               <input type="number" inputMode="numeric" className="ios-input font-mono" placeholder="0" value={windSpeed} onChange={(e) => setWindSpeed(e.target.value)} />
             </div>
             <div>
-              <label className="text-[10px] text-textSecondary ml-1 block mb-1">Direction</label>
+              <label className="text-xs text-textSecondary ml-1 block mb-1">Direction</label>
               <select className="ios-input bg-black appearance-none" value={windDirection} onChange={(e) => setWindDirection(e.target.value)}>
                 <option value="">Select</option>
                 {["12 o'clock","1 o'clock","2 o'clock","3 o'clock","4 o'clock","5 o'clock","6 o'clock","7 o'clock","8 o'clock","9 o'clock","10 o'clock","11 o'clock"].map(d => <option key={d} value={d}>{d}</option>)}
@@ -677,11 +679,11 @@ export default function LogShotPage() {
         {/* Per-Round Notes */}
         <div className="ios-card space-y-3">
           <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-wider ml-1">Per-Round Notes</h3>
-          <p className="text-[10px] text-textSecondary/60 ml-1">Log observations for each round (e.g. Flier, Wind Gust, Clean)</p>
+          <p className="text-xs text-textSecondary/60 ml-1">Log observations for each round (e.g. Flier, Wind Gust, Clean)</p>
           <div className="space-y-2">
             {[1,2,3,4,5].map((rnd, i) => (
               <div key={rnd} className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#2C2C2E] flex items-center justify-center text-[10px] font-bold text-green-400 shrink-0">{rnd}</span>
+                <span className="w-6 h-6 rounded-full bg-[#2C2C2E] flex items-center justify-center text-xs font-bold text-green-400 shrink-0">{rnd}</span>
                 <input className="ios-input text-xs flex-1" placeholder={`Round ${rnd} notes...`} value={roundNotes[i]} onChange={(e) => { const n = [...roundNotes]; n[i] = e.target.value; setRoundNotes(n); }} />
               </div>
             ))}
@@ -724,7 +726,7 @@ export default function LogShotPage() {
                 <Camera className="w-5 h-5 text-textSecondary" />
               </div>
               <span className="text-sm text-textSecondary">Snap your group</span>
-              <span className="text-[10px] text-textSecondary/60">Tap to use camera or gallery</span>
+              <span className="text-xs text-textSecondary/60">Tap to use camera or gallery</span>
             </button>
           )}
         </div>

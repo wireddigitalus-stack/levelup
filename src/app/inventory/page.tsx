@@ -71,13 +71,11 @@ export default function InventoryPage() {
         model: effectiveModel.trim(),
         lotNumber: newLot.lotNumber.trim(),
         nickname: newLot.nickname.trim() || undefined,
-        grainWeight: parseInt(newLot.grainWeight) || 40,
-        bulletType: newLot.bulletType || "LRN",
         purchaseDate: new Date().toISOString().split("T")[0],
         quantityPurchased: parseInt(newLot.quantity) || 500,
         quantityRemaining: parseInt(newLot.quantity) || 500,
-        pricePerBox: parseFloat(newLot.pricePerBox) || 0,
-        roundsPerBox: parseInt(newLot.roundsPerBox) || 50,
+        costPerBox: parseFloat(newLot.pricePerBox) || 0,
+        boxesPurchased: Math.ceil((parseInt(newLot.quantity) || 500) / (parseInt(newLot.roundsPerBox) || 50)),
       });
       setLotsAdded((n) => n + 1);
       setAddState("done");
@@ -219,22 +217,22 @@ export default function InventoryPage() {
               <div className="flex items-center justify-between bg-[#0A0A0A] rounded-xl px-3 py-2.5">
                 <div className="text-center">
                   <p className="text-sm font-bold">{lot.quantityRemaining.toLocaleString()}</p>
-                  <p className="text-[10px] text-textSecondary">rds left</p>
+                  <p className="text-xs text-textSecondary">rds left</p>
                 </div>
                 <div className="w-px h-6 bg-[#2C2C2E]" />
                 <div className="text-center">
                   <p className="text-sm font-bold">${costPerRound.toFixed(2)}</p>
-                  <p className="text-[10px] text-textSecondary">/round</p>
+                  <p className="text-xs text-textSecondary">/round</p>
                 </div>
                 <div className="w-px h-6 bg-[#2C2C2E]" />
                 <div className="text-center">
                   <p className="text-sm font-bold">${totalCost.toFixed(0)}</p>
-                  <p className="text-[10px] text-textSecondary">invested</p>
+                  <p className="text-xs text-textSecondary">invested</p>
                 </div>
                 <div className="w-px h-6 bg-[#2C2C2E]" />
                 <div className="text-center">
                   <p className="text-sm font-bold text-primary">{bestRifle?.make || "—"}</p>
-                  <p className="text-[10px] text-textSecondary">best in</p>
+                  <p className="text-xs text-textSecondary">best in</p>
                 </div>
               </div>
 
@@ -278,7 +276,7 @@ export default function InventoryPage() {
                       return (
                         <div className="bg-black/20 backdrop-blur-sm rounded-xl px-4 py-2 text-center">
                           <p className="text-3xl font-black text-white">{bestGrade.grade}</p>
-                          <p className="text-white/70 text-[10px]">{bestGrade.score}/100</p>
+                          <p className="text-white/70 text-xs">{bestGrade.score}/100</p>
                         </div>
                       );
                     })()}
@@ -289,19 +287,19 @@ export default function InventoryPage() {
               {/* Metrics Grid */}
               <div className="grid grid-cols-2 gap-px bg-[#2C2C2E]">
                 <div className="bg-[#1C1C1E] px-4 py-3">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Std Deviation</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Std Deviation</p>
                   <p className="text-xl font-bold mt-0.5">{getSD(reportLot.id)} <span className="text-xs text-textSecondary">fps</span></p>
                 </div>
                 <div className="bg-[#1C1C1E] px-4 py-3">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Ext Spread</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Ext Spread</p>
                   <p className="text-xl font-bold mt-0.5">{getES(reportLot.id)} <span className="text-xs text-textSecondary">fps</span></p>
                 </div>
                 <div className="bg-[#1C1C1E] px-4 py-3">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Shots Logged</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Shots Logged</p>
                   <p className="text-xl font-bold mt-0.5">{getShotCountForLot(reportLot.id)}</p>
                 </div>
                 <div className="bg-[#1C1C1E] px-4 py-3">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Avg Vertical</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Avg Vertical</p>
                   <p className="text-xl font-bold mt-0.5">{getAvgVertical(reportLot.id)} <span className="text-xs text-textSecondary">in</span></p>
                 </div>
               </div>
@@ -309,25 +307,25 @@ export default function InventoryPage() {
               {/* Cost Section */}
               <div className="border-t border-[#2C2C2E] px-4 py-3 flex justify-between items-center">
                 <div>
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Investment</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Investment</p>
                   <p className="text-lg font-bold">${getLotCost(reportLot).toFixed(2)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Cost/Round</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Cost/Round</p>
                   <p className="text-lg font-bold">${getLotCostPerRound(reportLot).toFixed(3)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-textSecondary uppercase tracking-wider">Remaining</p>
+                  <p className="text-xs text-textSecondary uppercase tracking-wider">Remaining</p>
                   <p className="text-lg font-bold">{reportLot.quantityRemaining.toLocaleString()}</p>
                 </div>
               </div>
 
               {/* Footer */}
               <div className="border-t border-[#2C2C2E] px-4 py-2.5 flex justify-between items-center">
-                <p className="text-[10px] text-textSecondary">
+                <p className="text-xs text-textSecondary">
                   Generated {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
-                <p className="text-[10px] text-textSecondary font-semibold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+                <p className="text-xs text-textSecondary font-semibold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
                   Level<span className="font-black">UP</span> Precision
                 </p>
               </div>
@@ -366,7 +364,7 @@ export default function InventoryPage() {
                 <p className="text-lg font-bold">Lot Added!</p>
                 <p className="text-sm text-textSecondary">{effectiveBrand} {effectiveModel} — Lot #{newLot.lotNumber}</p>
                 {lotsAdded > 1 && (
-                  <p className="text-[10px] text-green-400/60 font-mono">{lotsAdded} lots added this session</p>
+                  <p className="text-xs text-green-400/60 font-mono">{lotsAdded} lots added this session</p>
                 )}
                 <div className="flex gap-3 w-full mt-3">
                   <button
@@ -402,7 +400,7 @@ export default function InventoryPage() {
                 <div className="px-5 py-4 space-y-4 max-h-[70vh] overflow-y-auto">
                   {/* Brand Dropdown */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Brand *</label>
+                    <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Brand *</label>
                     <select
                       value={newLot.brand}
                       onChange={(e) => handleBrandChange(e.target.value)}
@@ -418,7 +416,7 @@ export default function InventoryPage() {
                   {/* Custom brand input (only if Other) */}
                   {newLot.brand === "Other" && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Custom Brand Name *</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Custom Brand Name *</label>
                       <input type="text" value={newLot.customBrand} onChange={(e) => setNewLot({ ...newLot, customBrand: e.target.value })} placeholder="Enter brand name" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                   )}
@@ -426,7 +424,7 @@ export default function InventoryPage() {
                   {/* Model Dropdown */}
                   {newLot.brand && newLot.brand !== "Other" && brandModels.length > 0 && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Model</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Model</label>
                       <select
                         value={newLot.model}
                         onChange={(e) => handleModelChange(e.target.value)}
@@ -442,7 +440,7 @@ export default function InventoryPage() {
                   {/* Custom model input (only if Other) */}
                   {newLot.brand === "Other" && (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Model / Type</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Model / Type</label>
                       <input type="text" value={newLot.customModel} onChange={(e) => setNewLot({ ...newLot, customModel: e.target.value })} placeholder="Enter model name" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                   )}
@@ -462,11 +460,11 @@ export default function InventoryPage() {
                   {/* Lot Number & Nickname */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Lot Number *</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Lot Number *</label>
                       <input type="text" value={newLot.lotNumber} onChange={(e) => setNewLot({ ...newLot, lotNumber: e.target.value })} placeholder="e.g. 2847" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" autoFocus />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Nickname</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Nickname</label>
                       <input type="text" value={newLot.nickname} onChange={(e) => setNewLot({ ...newLot, nickname: e.target.value })} placeholder="optional" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                   </div>
@@ -474,11 +472,11 @@ export default function InventoryPage() {
                   {/* Quantity & Weight */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Quantity (rounds)</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Quantity (rounds)</label>
                       <input type="number" value={newLot.quantity} onChange={(e) => setNewLot({ ...newLot, quantity: e.target.value })} placeholder="500" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Grain Weight</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Grain Weight</label>
                       <input type="number" value={newLot.grainWeight} onChange={(e) => setNewLot({ ...newLot, grainWeight: e.target.value })} className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                   </div>
@@ -486,11 +484,11 @@ export default function InventoryPage() {
                   {/* Cost */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Price per Box ($)</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Price per Box ($)</label>
                       <input type="number" step="0.01" value={newLot.pricePerBox} onChange={(e) => setNewLot({ ...newLot, pricePerBox: e.target.value })} placeholder="14.99" className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-textSecondary uppercase tracking-wider ml-1">Rounds per Box</label>
+                      <label className="text-xs font-bold text-textSecondary uppercase tracking-wider ml-1">Rounds per Box</label>
                       <input type="number" value={newLot.roundsPerBox} onChange={(e) => setNewLot({ ...newLot, roundsPerBox: e.target.value })} className="w-full bg-black border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30" />
                     </div>
                   </div>

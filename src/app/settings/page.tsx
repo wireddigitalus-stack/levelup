@@ -344,6 +344,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <Bluetooth className="w-4 h-4 text-primary" />
             <h3 className="font-semibold text-sm">Connectivity</h3>
+            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">Demo</span>
           </div>
         </div>
 
@@ -387,14 +388,15 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-primary" />
             <h3 className="font-semibold text-sm">Pair Devices</h3>
+            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">Demo</span>
           </div>
           {scanState === "scanning" && (
-            <span className="text-[10px] text-green-400 font-medium tracking-wider uppercase">
+            <span className="text-xs text-green-400 font-medium tracking-wider uppercase">
               Scanning...
             </span>
           )}
           {scanState === "done" && (
-            <span className="text-[10px] text-textSecondary font-medium">
+            <span className="text-xs text-textSecondary font-medium">
               {discoveredDevices.length} found
             </span>
           )}
@@ -506,7 +508,7 @@ export default function SettingsPage() {
                     </p>
                     <div className="flex items-center gap-2">
                       <p className={clsx(
-                        "text-[10px] transition-colors duration-300",
+                        "text-xs transition-colors duration-300",
                         device.status === "connected"
                           ? "text-green-400"
                           : device.status === "pairing"
@@ -539,7 +541,7 @@ export default function SettingsPage() {
                   </button>
                 )}
                 {device.status === "connected" && (
-                  <span className="text-[10px] text-green-400/60 font-medium">
+                  <span className="text-xs text-green-400/60 font-medium">
                     ✓ Linked
                   </span>
                 )}
@@ -558,7 +560,7 @@ export default function SettingsPage() {
           </button>
         )}
 
-        <p className="text-[10px] text-textSecondary/40 text-center">
+        <p className="text-xs text-textSecondary/40 text-center">
           Demo mode • Simulated device discovery
         </p>
       </div>
@@ -784,14 +786,14 @@ function InstallAppCard() {
         <div className="px-4 py-3 border-b border-[#2C2C2E]">
           <div className="flex items-center gap-2">
             <Smartphone className="w-4 h-4 text-green-400" />
-            <h3 className="font-semibold text-sm">Install App</h3>
+            <h3 className="font-semibold text-sm">Save App</h3>
           </div>
         </div>
         <div className="px-4 py-4 flex items-center gap-3">
           <Check className="w-5 h-5 text-green-400" />
           <div>
-            <p className="text-sm font-medium text-green-400">Installed</p>
-            <p className="text-xs text-textSecondary">LevelUP AI is running as a native app</p>
+            <p className="text-sm font-medium text-green-400">Saved</p>
+            <p className="text-xs text-textSecondary">LevelUP AI is saved to your device</p>
           </div>
         </div>
       </div>
@@ -811,7 +813,7 @@ function InstallAppCard() {
       <div className="px-4 py-3 border-b border-[#2C2C2E]">
         <div className="flex items-center gap-2">
           <Smartphone className="w-4 h-4 text-primary" />
-          <h3 className="font-semibold text-sm">Install App</h3>
+          <h3 className="font-semibold text-sm">Save App</h3>
         </div>
       </div>
 
@@ -828,9 +830,9 @@ function InstallAppCard() {
         >
           <Download className="w-5 h-5 text-primary" />
           <div className="text-left flex-1">
-            <p className="text-sm font-medium">Add to Home Screen</p>
+            <p className="text-sm font-medium">Save This App to Your Device</p>
             <p className="text-xs text-textSecondary">
-              Install LevelUP AI as a native app — works offline
+              Works offline — launches like a native app
             </p>
           </div>
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -846,7 +848,7 @@ function InstallAppCard() {
               </p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">1</span>
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">1</span>
                   <p className="text-sm text-textSecondary">
                     Tap the <span className="font-bold text-white">Share</span> button
                     <span className="inline-block ml-1 text-blue-400">
@@ -858,20 +860,26 @@ function InstallAppCard() {
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">2</span>
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">2</span>
                   <p className="text-sm text-textSecondary">
-                    Scroll down and tap <span className="font-bold text-white">&quot;Add to Home Screen&quot;</span>
+                    Scroll the share sheet and tap <span className="font-bold text-white">&quot;View More&quot;</span> or swipe up
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">3</span>
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">3</span>
+                  <p className="text-sm text-textSecondary">
+                    Tap <span className="font-bold text-white">&quot;Add to Home Screen&quot;</span>
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">4</span>
                   <p className="text-sm text-textSecondary">
                     Tap <span className="font-bold text-white">&quot;Add&quot;</span> — LevelUP AI appears on your home screen
                   </p>
                 </div>
               </div>
               <div className="bg-green-500/10 rounded-xl p-3 border border-green-500/20">
-                <p className="text-[11px] text-green-400 font-medium">
+                <p className="text-xs text-green-400 font-medium">
                   ✨ Once installed, LevelUP AI launches full-screen like a native app with offline support.
                 </p>
               </div>
@@ -881,13 +889,13 @@ function InstallAppCard() {
               <p className="text-sm font-medium text-white">Install on this device</p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">1</span>
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">1</span>
                   <p className="text-sm text-textSecondary">
                     Tap the <span className="font-bold text-white">⋮ menu</span> in your browser
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">2</span>
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">2</span>
                   <p className="text-sm text-textSecondary">
                     Tap <span className="font-bold text-white">&quot;Install app&quot;</span> or <span className="font-bold text-white">&quot;Add to Home screen&quot;</span>
                   </p>
@@ -903,6 +911,16 @@ function InstallAppCard() {
           </button>
         </div>
       )}
+
+      {/* Version Badge */}
+      <div className="flex flex-col items-center gap-1 pt-4 pb-2">
+        <p className="text-[10px] text-textSecondary/50 font-mono tracking-wider">
+          LevelUP AI · v0.9.0 Beta
+        </p>
+        <p className="text-[9px] text-textSecondary/30 font-mono">
+          Build 042526 · Tri-Cities, TN
+        </p>
+      </div>
     </div>
   );
 }

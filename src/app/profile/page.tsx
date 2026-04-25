@@ -231,7 +231,7 @@ export default function ProfilePage() {
                   <h2 className="text-lg font-bold text-white">
                     {editingRifle ? "Edit Rifle" : "Add Rifle"}
                   </h2>
-                  <p className="text-[10px] text-textSecondary">
+                  <p className="text-xs text-textSecondary">
                     {editingRifle ? "Update rifle profile" : "Add a new rifle to your armory"}
                   </p>
                 </div>
@@ -245,7 +245,7 @@ export default function ProfilePage() {
             <div className="space-y-4">
               {/* Make */}
               <div>
-                <label className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
                   Manufacturer
                 </label>
                 <select
@@ -273,7 +273,7 @@ export default function ProfilePage() {
 
               {/* Model */}
               <div>
-                <label className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
                   Model
                 </label>
                 <div className="flex gap-2 items-center">
@@ -290,7 +290,7 @@ export default function ProfilePage() {
               {/* Barrel Length + Twist — side by side */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
                     Barrel Length
                   </label>
                   <select
@@ -304,7 +304,7 @@ export default function ProfilePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
                     Twist Rate
                   </label>
                   <select
@@ -321,7 +321,7 @@ export default function ProfilePage() {
 
               {/* Tuner */}
               <div>
-                <label className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
                   Tuner
                 </label>
                 <select

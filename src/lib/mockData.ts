@@ -71,7 +71,7 @@ export interface UserProfile {
 export const mockUser: UserProfile = {
   id: "usr_001",
   fullName: "Allen Hurley",
-  email: "allen@levelup.com",
+  email: "allen.hurley@levelup-ai.com",
 };
 
 // ---------- Rifles ----------

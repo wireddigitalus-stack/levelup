@@ -171,7 +171,7 @@ export default function AnalyticsPage() {
           <Filter className="w-4 h-4" /> Filters
           <ChevronDown className={`w-3 h-3 transition-transform ${showFilters ? "rotate-180" : ""}`} />
         </button>
-        <span className="text-[11px] text-textSecondary font-mono">Last {filterDays} days · {filteredShots.length} shots</span>
+        <span className="text-xs text-textSecondary font-mono">Last {filterDays} days · {filteredShots.length} shots</span>
       </div>
 
       {showFilters && (
@@ -255,7 +255,7 @@ export default function AnalyticsPage() {
         <div className="flex items-center gap-2 mb-3">
           <Thermometer className="w-4 h-4 text-red-400" />
           <h3 className="font-semibold text-sm">Temp Sensitivity</h3>
-          <span className="text-[10px] text-textSecondary ml-auto">°F vs fps</span>
+          <span className="text-xs text-textSecondary ml-auto">°F vs fps</span>
         </div>
         <div className="h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
         <div className="flex items-center gap-2 mb-3">
           <Target className="w-4 h-4 text-primary" />
           <h3 className="font-semibold text-sm">Group Size Trend</h3>
-          <span className="text-[10px] text-textSecondary ml-auto">MOA</span>
+          <span className="text-xs text-textSecondary ml-auto">MOA</span>
         </div>
         <div className="h-40 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -320,7 +320,7 @@ export default function AnalyticsPage() {
               <Activity className="w-4 h-4 text-purple-400" />
               <h3 className="font-semibold text-sm">V-Spread vs H-Spread</h3>
             </div>
-            <p className="text-[10px] text-textSecondary mb-3">V = Ammo consistency • H = Wind reading</p>
+            <p className="text-xs text-textSecondary mb-3">V = Ammo consistency • H = Wind reading</p>
 
             {/* Summary Badges */}
             <div className="grid grid-cols-3 gap-2 mb-3">
@@ -340,7 +340,7 @@ export default function AnalyticsPage() {
 
             {/* Diagnosis */}
             <div className="bg-[#0A0A0A] rounded-xl px-3 py-2 mb-3 flex items-center justify-between">
-              <span className="text-[10px] text-textSecondary">Primary Error Source</span>
+              <span className="text-xs text-textSecondary">Primary Error Source</span>
               <span className="text-xs font-bold" style={{ color: diagColor }}>{diagnosis}</span>
             </div>
 
@@ -375,7 +375,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{lot.name} <span className="text-textSecondary font-normal">#{lot.lot}</span></p>
-              <p className="text-[10px] text-textSecondary">SD {lot.sd} • ES {lot.es} • {lot.shots} shots • Best: {lot.bestRifle}</p>
+              <p className="text-xs text-textSecondary">SD {lot.sd} • ES {lot.es} • {lot.shots} shots • Best: {lot.bestRifle}</p>
             </div>
             <div className="text-right shrink-0">
               <p className="text-sm font-bold" style={{ color: lot.gradeColor }}>{lot.score}</p>
@@ -406,11 +406,11 @@ export default function AnalyticsPage() {
               <h3 className="font-bold text-sm text-white tracking-tight">Ask Spotter</h3>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <p className="text-[10px] text-green-400/80 font-medium">Powered by Gemini • Online</p>
+                <p className="text-xs text-green-400/80 font-medium">Powered by Gemini • Online</p>
               </div>
             </div>
             {aiMessages.length > 0 && (
-              <button onClick={() => setAiMessages([])} className="text-[10px] text-white/30 hover:text-white/60 transition-colors px-2 py-1 rounded-lg hover:bg-white/5">
+              <button onClick={() => setAiMessages([])} className="text-xs text-white/30 hover:text-white/60 transition-colors px-2 py-1 rounded-lg hover:bg-white/5">
                 Clear
               </button>
             )}
@@ -433,7 +433,7 @@ export default function AnalyticsPage() {
                   { emoji: "🎯", text: "Tightest group?" },
                 ].map((q) => (
                   <button key={q.text} onClick={() => { setAiPrompt(q.text); }}
-                    className="flex items-center gap-1.5 text-[11px] font-medium bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-white/70 hover:bg-white/10 hover:text-white active:scale-95 transition-all"
+                    className="flex items-center gap-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-white/70 hover:bg-white/10 hover:text-white active:scale-95 transition-all"
                   >
                     <span>{q.emoji}</span>
                     <span>{q.text}</span>
@@ -451,8 +451,8 @@ export default function AnalyticsPage() {
                   <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shrink-0 mt-1">
                     <Brain className="w-3 h-3 text-black" />
                   </div>
-                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl rounded-tl-md px-3.5 py-2.5 text-[15px] leading-relaxed text-white/90 whitespace-pre-wrap border border-white/5">
-                    {msg.text}
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl rounded-tl-md px-3.5 py-2.5 text-[15px] leading-relaxed text-white/90 border border-white/5">
+                    <FormattedAIMessage text={msg.text} />
                   </div>
                 </div>
               )}
@@ -504,5 +504,67 @@ export default function AnalyticsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+/* ── Dyslexia-friendly AI message formatter ───────────────── */
+function FormattedAIMessage({ text }: { text: string }) {
+  const lines = text.split("\n").filter((l) => l.trim() !== "");
+
+  return (
+    <div className="space-y-3" style={{ letterSpacing: "0.015em" }}>
+      {lines.map((line, i) => {
+        const trimmed = line.trim();
+
+        // Bullet point line (-, •, *, or numbered like "1.")
+        const isBullet = /^[-•*]/.test(trimmed) || /^\d+[.)]/.test(trimmed);
+        // Bold header line (starts with **)
+        const isHeader = /^\*\*(.+?)\*\*/.test(trimmed);
+
+        if (isHeader) {
+          const headerText = trimmed.replace(/\*\*/g, "");
+          return (
+            <p key={i} className="font-semibold text-white mt-1 leading-loose tracking-wide">
+              {headerText}
+            </p>
+          );
+        }
+
+        if (isBullet) {
+          // Strip the bullet marker
+          const content = trimmed.replace(/^[-•*]\s*/, "").replace(/^\d+[.)]\s*/, "");
+          // Bold segments within bullet
+          const parts = content.split(/(\*\*.*?\*\*)/g);
+          return (
+            <div key={i} className="flex gap-2.5 items-start py-1">
+              <span className="text-green-400 mt-0.5 shrink-0 text-xs">●</span>
+              <p className="leading-loose tracking-wide text-white/85">
+                {parts.map((part, j) =>
+                  /^\*\*(.+?)\*\*$/.test(part) ? (
+                    <span key={j} className="font-semibold text-white">{part.replace(/\*\*/g, "")}</span>
+                  ) : (
+                    <span key={j}>{part}</span>
+                  )
+                )}
+              </p>
+            </div>
+          );
+        }
+
+        // Regular paragraph
+        const parts = trimmed.split(/(\*\*.*?\*\*)/g);
+        return (
+          <p key={i} className="leading-loose tracking-wide text-white/85">
+            {parts.map((part, j) =>
+              /^\*\*(.+?)\*\*$/.test(part) ? (
+                <span key={j} className="font-semibold text-white">{part.replace(/\*\*/g, "")}</span>
+              ) : (
+                <span key={j}>{part}</span>
+              )
+            )}
+          </p>
+        );
+      })}
+    </div>
   );
 }

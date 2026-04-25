@@ -35,7 +35,7 @@ function BottomNav() {
               )}
             >
               <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 1.8} />
-              <span className="text-[10px] font-medium leading-none">{tab.name}</span>
+              <span className="text-xs font-medium leading-none">{tab.name}</span>
             </Link>
           );
         })}

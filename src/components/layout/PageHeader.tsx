@@ -9,7 +9,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, subtitle }: PageHeaderProps) {
   return (
-    <>
+    <div>
       <h1 className="text-3xl tracking-tight flex items-center gap-2">
         <Image
           src="/icon-192x192.svg"
@@ -34,6 +34,6 @@ export default function PageHeader({ title, subtitle }: PageHeaderProps) {
       {subtitle && (
         <p className="text-textSecondary text-sm mt-1">{subtitle}</p>
       )}
-    </>
+    </div>
   );
 }
