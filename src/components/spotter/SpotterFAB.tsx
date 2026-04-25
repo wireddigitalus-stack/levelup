@@ -194,7 +194,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
         className={clsx(
           "fixed z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition-all duration-300",
           "bg-gradient-to-br from-green-400 to-emerald-600 shadow-green-500/30",
-          "bottom-[100px] right-4",
+          "bottom-[140px] right-4",
           isOpen && "scale-0 opacity-0 pointer-events-none"
         )}
       >
@@ -206,7 +206,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -214,7 +214,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
       {/* Spotter Drawer */}
       <div
         className={clsx(
-          "fixed left-0 right-0 z-50 transition-transform duration-300 ease-out",
+          "fixed left-0 right-0 z-[60] transition-transform duration-300 ease-out",
           isOpen ? "translate-y-0" : "translate-y-full"
         )}
         style={{ bottom: "0px" }}
@@ -325,7 +325,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
           )}
 
           {/* Input Area */}
-          <div className="shrink-0 px-4 pt-2 border-t border-[#2C2C2E]" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 16px), 16px)" }}>
+          <div className="shrink-0 px-4 pt-2 border-t border-[#2C2C2E]" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 20px), 20px)" }}>
             <div className="flex items-center gap-2 bg-[#0A0A0A] rounded-2xl px-4 py-2.5 border border-[#2C2C2E] focus-within:border-green-400/40 transition-colors">
               <input
                 ref={inputRef}

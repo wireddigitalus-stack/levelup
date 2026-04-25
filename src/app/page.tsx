@@ -8,6 +8,8 @@ import {
 import { Settings2, Activity, Target, Calendar, ChevronRight, Thermometer, Shield, Crosshair } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { getConfidenceProfile, getBCForAmmo, getTransonicRange } from "@/lib/ballistics";
+import WeatherCard from "@/components/weather/WeatherCard";
+import PageHeader from "@/components/layout/PageHeader";
 
 export default function DashboardPage() {
   const {
@@ -69,19 +71,15 @@ export default function DashboardPage() {
     <main className="p-4 max-w-md mx-auto space-y-6 pt-8 pb-10">
       <header className="flex justify-between items-end mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="text-white font-extrabold">Level</span><span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-extrabold">UP</span>{" "}
-            Dashboard
-          </h1>
-          <p className="text-[11px] font-medium tracking-widest uppercase text-textSecondary/60 mt-0.5">
-            Lot Evaluation & Velocity Error Logger
-          </p>
-          <p className="text-textSecondary text-sm mt-1">Data from last 30 days</p>
+          <PageHeader title="Dashboard" subtitle="Data from last 30 days" />
         </div>
         <Link href="/settings" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center active:scale-95 transition-transform">
           <Settings2 className="w-5 h-5 text-textPrimary" />
         </Link>
       </header>
+
+      {/* Range Weather */}
+      <WeatherCard />
 
       {/* Filter Card */}
       <div className="ios-card space-y-3">
@@ -179,11 +177,9 @@ export default function DashboardPage() {
                 tickFormatter={(v: number) => `${v}%`}
               />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1C1C1E",
-                  borderColor: "#2C2C2E",
-                  borderRadius: "12px",
-                }}
+                contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }}
+                labelStyle={{ color: "#fff", fontWeight: 600 }}
+                itemStyle={{ color: "#fff" }}
                 formatter={(value: number) => [`${value}%`, "Hit Probability"]}
                 labelFormatter={(label: number) => `${label} yards`}
               />
@@ -293,12 +289,9 @@ export default function DashboardPage() {
               />
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
-                contentStyle={{
-                  backgroundColor: "#1C1C1E",
-                  borderColor: "#2C2C2E",
-                  borderRadius: "12px",
-                }}
-                itemStyle={{ color: "#FFFFFF" }}
+                contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }}
+                labelStyle={{ color: "#fff", fontWeight: 600 }}
+                itemStyle={{ color: "#fff" }}
               />
               <Scatter name="Groups" data={tunerData} fill="#32D74B" />
             </ScatterChart>
@@ -330,11 +323,9 @@ export default function DashboardPage() {
               />
               <Tooltip
                 cursor={{ fill: "#2C2C2E" }}
-                contentStyle={{
-                  backgroundColor: "#1C1C1E",
-                  borderColor: "#2C2C2E",
-                  borderRadius: "12px",
-                }}
+                contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }}
+                labelStyle={{ color: "#fff", fontWeight: 600 }}
+                itemStyle={{ color: "#fff" }}
                 formatter={(value: number) => [
                   `${value > 0 ? "+" : ""}${value} in`,
                   "Vertical",

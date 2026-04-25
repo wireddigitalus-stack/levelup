@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, Crosshair, Ruler, Thermometer, Target,
-  Bluetooth, Bell, Shield, Moon, Info, Wifi, WifiOff, Check, Loader2, Radio
+  Bluetooth, Bell, Shield, Moon, Info, Wifi, WifiOff, Check, Loader2, Radio,
+  MapPin, Mountain, Eye, EyeOff, Download, Trash2, Database, Smartphone
 } from "lucide-react";
 import { clsx } from "clsx";
+import PageHeader from "@/components/layout/PageHeader";
 
 interface DeviceInfo {
   id: string;
@@ -75,6 +77,14 @@ export default function SettingsPage() {
       );
     }, 2000 + Math.random() * 1000);
   }, []);
+
+  const [homeRange, setHomeRange] = useState("Kingsport Rifle & Pistol");
+  const [elevation, setElevation] = useState("1200");
+  const [defaultDA, setDefaultDA] = useState("2500");
+  const [autoWeather, setAutoWeather] = useState(true);
+  const [darkMode, setDarkMode] = useState(true);
+  const [compactCards, setCompactCards] = useState(false);
+  const [showCostData, setShowCostData] = useState(true);
 
   const Toggle = ({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) => (
     <button
@@ -154,14 +164,7 @@ export default function SettingsPage() {
       </Link>
 
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">
-          <span className="text-white font-extrabold">Level</span><span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-extrabold">UP</span>{" "}
-          Settings
-        </h1>
-        <p className="text-[11px] font-medium tracking-widest uppercase text-textSecondary/60 mt-0.5">
-          Lot Evaluation & Velocity Error Logger
-        </p>
-        <p className="text-textSecondary text-sm mt-1">Precision preferences</p>
+        <PageHeader title="Settings" subtitle="Precision preferences" />
       </header>
 
       {/* Ballistic Preferences */}
@@ -558,6 +561,165 @@ export default function SettingsPage() {
         <p className="text-[10px] text-textSecondary/40 text-center">
           Demo mode • Simulated device discovery
         </p>
+      </div>
+
+      {/* Range & Environment */}
+      <div className="ios-card p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-sm">Range &amp; Environment</h3>
+          </div>
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-3 mb-2">
+            <MapPin className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Home Range</p>
+              <p className="text-xs text-textSecondary">Auto-fills session location</p>
+            </div>
+          </div>
+          <input
+            className="w-full bg-[#0A0A0A] border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30 mt-1"
+            value={homeRange}
+            onChange={(e) => setHomeRange(e.target.value)}
+            placeholder="e.g. Kingsport Rifle & Pistol"
+          />
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-3 mb-2">
+            <Mountain className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Range Elevation</p>
+              <p className="text-xs text-textSecondary">Altitude for DA calculations (ft)</p>
+            </div>
+          </div>
+          <input
+            type="number"
+            className="w-full bg-[#0A0A0A] border border-[#2C2C2E] rounded-xl px-4 py-3 text-sm outline-none focus:border-green-500/50 transition-colors placeholder:text-textSecondary/30 mt-1"
+            value={elevation}
+            onChange={(e) => setElevation(e.target.value)}
+            placeholder="1200"
+          />
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-3 mb-2">
+            <Thermometer className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Default Density Altitude</p>
+              <p className="text-xs text-textSecondary">Baseline DA for comparisons (ft)</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            {[1000, 2000, 2500, 3500, 5000].map((da) => (
+              <button
+                key={da}
+                onClick={() => setDefaultDA(String(da))}
+                className={clsx(
+                  "flex-1 py-2 rounded-lg text-xs font-semibold transition-all",
+                  defaultDA === String(da)
+                    ? "bg-gradient-to-r from-green-400 to-emerald-500 text-black"
+                    : "bg-[#2C2C2E] text-textSecondary"
+                )}
+              >
+                {da >= 1000 ? `${(da / 1000).toFixed(da % 1000 === 0 ? 0 : 1)}k` : da}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Wifi className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Auto-Fetch Weather</p>
+              <p className="text-xs text-textSecondary">GPS weather at session start</p>
+            </div>
+          </div>
+          <Toggle value={autoWeather} onChange={setAutoWeather} />
+        </div>
+      </div>
+
+      {/* Display Preferences */}
+      <div className="ios-card p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-2">
+            <Smartphone className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-sm">Display Preferences</h3>
+          </div>
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#2C2C2E] flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Moon className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Dark Mode</p>
+              <p className="text-xs text-textSecondary">Optimized for outdoor glare</p>
+            </div>
+          </div>
+          <Toggle value={darkMode} onChange={setDarkMode} />
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#2C2C2E] flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Eye className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Show Cost Data</p>
+              <p className="text-xs text-textSecondary">Display $/round and investment</p>
+            </div>
+          </div>
+          <Toggle value={showCostData} onChange={setShowCostData} />
+        </div>
+
+        <div className="px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <Target className="w-4 h-4 text-textSecondary" />
+            <div>
+              <p className="text-sm font-medium">Compact Cards</p>
+              <p className="text-xs text-textSecondary">Denser layout for more data</p>
+            </div>
+          </div>
+          <Toggle value={compactCards} onChange={setCompactCards} />
+        </div>
+      </div>
+
+      {/* Data Management */}
+      <div className="ios-card p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-2">
+            <Database className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-sm">Data Management</h3>
+          </div>
+        </div>
+
+        <button className="w-full px-4 py-4 border-b border-[#2C2C2E] flex items-center gap-3 active:bg-white/5 transition-colors">
+          <Download className="w-4 h-4 text-textSecondary" />
+          <div className="text-left flex-1">
+            <p className="text-sm font-medium">Export All Data</p>
+            <p className="text-xs text-textSecondary">Download CSV of shots, lots &amp; sessions</p>
+          </div>
+          <span className="text-xs text-primary font-medium">.csv</span>
+        </button>
+
+        <button className="w-full px-4 py-4 border-b border-[#2C2C2E] flex items-center gap-3 active:bg-white/5 transition-colors">
+          <Download className="w-4 h-4 text-textSecondary" />
+          <div className="text-left flex-1">
+            <p className="text-sm font-medium">Export Dope Cards</p>
+            <p className="text-xs text-textSecondary">Generate PDF for all rifles</p>
+          </div>
+          <span className="text-xs text-primary font-medium">.pdf</span>
+        </button>
+
+        <button className="w-full px-4 py-4 flex items-center gap-3 active:bg-red-500/5 transition-colors">
+          <Trash2 className="w-4 h-4 text-red-500/60" />
+          <div className="text-left flex-1">
+            <p className="text-sm font-medium text-red-400">Clear All Data</p>
+            <p className="text-xs text-textSecondary">Permanently delete all local data</p>
+          </div>
+        </button>
       </div>
 
       {/* About */}

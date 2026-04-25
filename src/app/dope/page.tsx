@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Zap, Crosshair, Clock, Gauge } from "lucide-react";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
+import PageHeader from "@/components/layout/PageHeader";
 import { calculateTrajectory, getBCForAmmo, getTransonicRange, type TrajectoryPoint } from "@/lib/ballistics";
 
 export default function DopePage() {
@@ -52,16 +53,7 @@ export default function DopePage() {
       </Link>
 
       <header>
-        <h1 className="text-3xl font-bold tracking-tight">
-          <span className="text-white font-extrabold">Level</span><span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-extrabold">UP</span>{" "}
-          Dope Card
-        </h1>
-        <p className="text-[11px] font-medium tracking-widest uppercase text-textSecondary/60 mt-0.5">
-          Lot Evaluation & Velocity Error Logger
-        </p>
-        <p className="text-textSecondary text-sm mt-1">
-          Personalized trajectory from your logged data
-        </p>
+        <PageHeader title="Dope Card" subtitle="Personalized trajectory from your logged data" />
       </header>
 
       {/* Rifle + Ammo Selectors */}

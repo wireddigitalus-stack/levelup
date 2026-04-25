@@ -106,6 +106,13 @@ create table public.shots (
   group_size_moa numeric(6,3),
   poi_vertical numeric(6,2),
   poi_horizontal numeric(6,2),
+  v_spread_in numeric(6,3),          -- vertical spread in inches
+  h_spread_in numeric(6,3),          -- horizontal spread in inches
+  elevation numeric(6,2),            -- elevation dialed (MOA or MIL)
+  elevation_unit text default 'moa' check (elevation_unit in ('moa', 'mil')),
+  wind_speed numeric(5,1),           -- wind speed at time of group (mph)
+  wind_direction text,               -- clock-face direction e.g. "9 o'clock"
+  round_notes text,                  -- per-round observation ("Flier", "Wind Gust")
   is_cold_bore boolean not null default false,
   tuner_setting numeric(6,2),
   shot_number int,

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowRightLeft, Trophy, Activity, Target, Crosshair, TrendingDown } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import PageHeader from "@/components/layout/PageHeader";
 
 export default function ComparePage() {
   const {
@@ -74,14 +75,7 @@ export default function ComparePage() {
   return (
     <main className="p-4 max-w-md mx-auto space-y-6 pt-8 pb-10">
       <header className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">
-          <span className="text-white font-extrabold">Level</span><span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-extrabold">UP</span>{" "}
-          Compare
-        </h1>
-        <p className="text-[11px] font-medium tracking-widest uppercase text-textSecondary/60 mt-0.5">
-          Lot Evaluation & Velocity Error Logger
-        </p>
-        <p className="text-textSecondary text-sm mt-1">Head-to-head lot testing</p>
+        <PageHeader title="Compare" subtitle="Head-to-head lot testing" />
       </header>
 
       {/* Rifle Selector */}

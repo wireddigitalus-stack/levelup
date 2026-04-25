@@ -31,13 +31,14 @@ Navigation help — you can guide users to these LevelUP pages:
 - Settings (/settings) — preferences and device pairing
 
 Response rules:
-- Be concise and actionable — max 200 words unless complex analysis is needed
-- Use proper rimfire terminology (SD, ES, MOA, DA, POI, come-up, etc.)
-- Provide specific numeric recommendations when possible
-- Use bullet points for quick scanning at the range
-- If data clearly favors one lot, state it confidently
-- Flag concerning trends (rising SD, temperature sensitivity, barrel wear)
-- When relevant, suggest which LevelUP page to visit for more detail`;
+- CRITICAL: Keep responses under 100 words. Be punchy and direct.
+- Lead with the answer, not context. No preamble.
+- Use 2-4 bullet points max. Each bullet = one insight.
+- Use rimfire terminology (SD, ES, MOA, DA, POI)
+- Give specific numbers — never say "good" without a metric
+- If one lot wins, name it in the first sentence
+- Skip pleasantries. No "Great question!" or "Let me analyze..."
+- Format: Answer first → Supporting data → One action item`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,9 +69,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Try gemini-2.0-flash first, fall back to gemini-1.5-flash
+    // Try gemini-2.5-flash first, fall back to gemini-2.5-pro
     let response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       // Try fallback model
       response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
