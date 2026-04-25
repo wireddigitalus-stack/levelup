@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#2C2C2E" vertical={false} />
               <XAxis dataKey="date" tick={{ fill: "#8E8E93", fontSize: 9 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
               <YAxis domain={["dataMin - 10", "dataMax + 10"]} tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
-              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px" }} formatter={(v: number) => [`${v} fps`, "MV"]} />
+              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }} formatter={(v: number) => [`${v} fps`, "MV"]} />
               <Line type="monotone" dataKey="velocity" stroke="#32D74B" strokeWidth={2} dot={{ r: 3, fill: "#32D74B" }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
@@ -239,7 +239,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#2C2C2E" vertical={false} />
               <XAxis dataKey="session" tick={{ fill: "#8E8E93", fontSize: 9 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
               <YAxis tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
-              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px" }} />
+              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }} />
               <Bar dataKey="sd" name="SD" fill="#FF9F0A" radius={[4, 4, 0, 0]} />
               <Bar dataKey="es" name="ES" fill="#FF453A" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#2C2C2E" />
               <XAxis type="number" dataKey="temp" name="Temp" domain={["dataMin - 5", "dataMax + 5"]} tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
               <YAxis type="number" dataKey="velocity" name="MV" domain={["dataMin - 10", "dataMax + 10"]} tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
-              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px" }} formatter={(v: number, name: string) => [name === "Temp" ? `${v}°F` : `${v} fps`, name]} />
+              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }} formatter={(v: number, name: string) => [name === "Temp" ? `${v}°F` : `${v} fps`, name]} />
               <Scatter data={tempVelocity} fill="#FF6B6B">
                 {tempVelocity.map((_, i) => <Cell key={i} fill={`hsl(${(tempVelocity[i].temp - 40) * 3}, 80%, 55%)`} />)}
               </Scatter>
@@ -288,7 +288,7 @@ export default function AnalyticsPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#2C2C2E" vertical={false} />
               <XAxis dataKey="idx" tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
               <YAxis domain={[0, "dataMax + 0.2"]} tick={{ fill: "#8E8E93", fontSize: 10 }} tickLine={false} axisLine={{ stroke: "#2C2C2E" }} />
-              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px" }} formatter={(v: number) => [`${v} MOA`, "Group"]} />
+              <Tooltip contentStyle={{ backgroundColor: "#1C1C1E", borderColor: "#2C2C2E", borderRadius: "12px", color: "#fff" }} formatter={(v: number) => [`${v} MOA`, "Group"]} />
               <Area type="monotone" dataKey="group" stroke="#32D74B" strokeWidth={2} fill="url(#groupGrad)" dot={{ r: 3, fill: "#32D74B" }} />
             </AreaChart>
           </ResponsiveContainer>

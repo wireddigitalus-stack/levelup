@@ -214,12 +214,13 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
       {/* Spotter Drawer */}
       <div
         className={clsx(
-          "fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ease-out",
+          "fixed left-0 right-0 z-50 transition-transform duration-300 ease-out",
           isOpen ? "translate-y-0" : "translate-y-full"
         )}
+        style={{ bottom: "0px" }}
       >
-        <div className="max-w-md mx-auto bg-[#1C1C1E] rounded-t-3xl border-t border-[#3A3A3C] overflow-hidden shadow-2xl"
-          style={{ maxHeight: "85vh" }}
+        <div className="max-w-md mx-auto bg-[#1C1C1E] rounded-t-3xl border-t border-[#3A3A3C] overflow-hidden shadow-2xl flex flex-col"
+          style={{ maxHeight: "80dvh", height: "80dvh" }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-[#2C2C2E]">
@@ -241,7 +242,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
           </div>
 
           {/* Messages Area */}
-          <div className="overflow-y-auto px-4 py-4 space-y-4" style={{ maxHeight: "50vh", minHeight: "200px" }}>
+          <div className="overflow-y-auto px-4 py-4 space-y-4 flex-1 min-h-0">
 
             {/* Pro Tip — shown initially */}
             {showTip && messages.length === 0 && (
@@ -324,7 +325,7 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
           )}
 
           {/* Input Area */}
-          <div className="px-4 pb-8 pt-2 border-t border-[#2C2C2E]">
+          <div className="shrink-0 px-4 pt-2 border-t border-[#2C2C2E]" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 16px), 16px)" }}>
             <div className="flex items-center gap-2 bg-[#0A0A0A] rounded-2xl px-4 py-2.5 border border-[#2C2C2E] focus-within:border-green-400/40 transition-colors">
               <input
                 ref={inputRef}
