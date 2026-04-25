@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Target, ArrowRightLeft, BarChart3, User } from "lucide-react";
+import { Home, Target, ArrowRightLeft, BarChart3, User, Package } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   const tabs = [
-    { name: "Dashboard", href: "/", icon: Home },
-    { name: "Log Shot", href: "/log", icon: Target },
+    { name: "Home", href: "/", icon: Home },
+    { name: "Log", href: "/log", icon: Target },
+    { name: "Inventory", href: "/inventory", icon: Package },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
     { name: "Compare", href: "/compare", icon: ArrowRightLeft },
     { name: "Profile", href: "/profile", icon: User },

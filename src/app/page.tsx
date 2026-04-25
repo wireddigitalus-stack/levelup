@@ -219,23 +219,49 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Links: Dope Card */}
-      <Link
-        href="/dope"
-        className="ios-card flex items-center justify-between bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] active:scale-[0.98] transition-transform"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <Crosshair className="w-5 h-5 text-primary" />
+      <div className="relative rounded-2xl p-[2px] overflow-hidden">
+        {/* Rotating gradient border */}
+        <div
+          className="absolute inset-[-100px]"
+          style={{
+            background: "conic-gradient(from var(--border-angle), #32D74B, #ffffff90, #059669, #ffffff50, #32D74B)",
+            animation: "borderRotate 4s linear infinite",
+          }}
+        />
+        <Link
+          href="/dope"
+          className="relative block bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] rounded-[14px] px-4 py-4 active:scale-[0.98] transition-transform"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Crosshair className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Range Card / Dope Card</p>
+                <p className="text-xs text-textSecondary">
+                  MV {avgMV} fps • Transonic at ~{transonicRange}y
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-textSecondary" />
           </div>
-          <div>
-            <p className="font-semibold text-sm">Range Card / Dope Card</p>
-            <p className="text-xs text-textSecondary">
-              MV {avgMV} fps • Transonic at ~{transonicRange}y
-            </p>
-          </div>
-        </div>
-        <ChevronRight className="w-5 h-5 text-textSecondary" />
-      </Link>
+        </Link>
+      </div>
+
+      {/* Border animation keyframes */}
+      <style jsx global>{`
+        @property --border-angle {
+          syntax: "<angle>";
+          inherits: false;
+          initial-value: 0deg;
+        }
+        @keyframes borderRotate {
+          to {
+            --border-angle: 360deg;
+          }
+        }
+      `}</style>
 
       {/* Tuner Node Scatter Plot */}
       <div className="ios-card">
