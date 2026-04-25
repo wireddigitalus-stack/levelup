@@ -166,10 +166,13 @@ export default function AnalyticsPage() {
   return (
     <main className="p-4 max-w-md mx-auto space-y-5 pt-8 pb-36">
       <PageHeader title="Analytics" subtitle="Performance trends & AI insights" />
-      <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 text-primary text-sm font-semibold active:opacity-70">
-        <Filter className="w-4 h-4" /> Filters
-        <ChevronDown className={`w-3 h-3 transition-transform ${showFilters ? "rotate-180" : ""}`} />
-      </button>
+      <div className="flex items-center justify-between">
+        <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 text-primary text-sm font-semibold active:opacity-70">
+          <Filter className="w-4 h-4" /> Filters
+          <ChevronDown className={`w-3 h-3 transition-transform ${showFilters ? "rotate-180" : ""}`} />
+        </button>
+        <span className="text-[11px] text-textSecondary font-mono">Last {filterDays} days · {filteredShots.length} shots</span>
+      </div>
 
       {showFilters && (
         <div className="ios-card space-y-3">

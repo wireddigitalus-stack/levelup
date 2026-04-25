@@ -722,6 +722,9 @@ export default function SettingsPage() {
         </button>
       </div>
 
+      {/* Install App */}
+      <InstallAppCard />
+
       {/* About */}
       <div className="ios-card p-0 overflow-hidden">
         <div className="px-4 py-3 border-b border-[#2C2C2E]">
@@ -744,5 +747,162 @@ export default function SettingsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+/* ── Install App Card ─────────────────────────────────────── */
+function InstallAppCard() {
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    // Detect if already installed
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true; // eslint-disable-line @typescript-eslint/no-explicit-any
+    setIsStandalone(standalone);
+
+    // Detect iOS
+    const ua = navigator.userAgent;
+    setIsIOS(/iPad|iPhone|iPod/.test(ua) || (ua.includes("Mac") && "ontouchend" in document));
+
+    // Listen for Android install prompt
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  // Already installed
+  if (isStandalone) {
+    return (
+      <div className="ios-card p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#2C2C2E]">
+          <div className="flex items-center gap-2">
+            <Smartphone className="w-4 h-4 text-green-400" />
+            <h3 className="font-semibold text-sm">Install App</h3>
+          </div>
+        </div>
+        <div className="px-4 py-4 flex items-center gap-3">
+          <Check className="w-5 h-5 text-green-400" />
+          <div>
+            <p className="text-sm font-medium text-green-400">Installed</p>
+            <p className="text-xs text-textSecondary">LevelUP AI is running as a native app</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Android — can trigger native prompt
+  const handleAndroidInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+  };
+
+  return (
+    <div className="ios-card p-0 overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#2C2C2E]">
+        <div className="flex items-center gap-2">
+          <Smartphone className="w-4 h-4 text-primary" />
+          <h3 className="font-semibold text-sm">Install App</h3>
+        </div>
+      </div>
+
+      {!showGuide ? (
+        <button
+          onClick={() => {
+            if (deferredPrompt) {
+              handleAndroidInstall();
+            } else {
+              setShowGuide(true);
+            }
+          }}
+          className="w-full px-4 py-4 flex items-center gap-3 active:bg-white/5 transition-colors"
+        >
+          <Download className="w-5 h-5 text-primary" />
+          <div className="text-left flex-1">
+            <p className="text-sm font-medium">Add to Home Screen</p>
+            <p className="text-xs text-textSecondary">
+              Install LevelUP AI as a native app — works offline
+            </p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <Download className="w-4 h-4 text-primary" />
+          </div>
+        </button>
+      ) : (
+        <div className="p-4 space-y-4">
+          {isIOS ? (
+            <>
+              <p className="text-sm font-medium text-white">
+                Install on iPhone / iPad
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">1</span>
+                  <p className="text-sm text-textSecondary">
+                    Tap the <span className="font-bold text-white">Share</span> button
+                    <span className="inline-block ml-1 text-blue-400">
+                      <svg className="w-4 h-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0-12l-4 4m4-4l4 4" />
+                      </svg>
+                    </span>
+                    {" "}at the bottom of Safari
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">2</span>
+                  <p className="text-sm text-textSecondary">
+                    Scroll down and tap <span className="font-bold text-white">&quot;Add to Home Screen&quot;</span>
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">3</span>
+                  <p className="text-sm text-textSecondary">
+                    Tap <span className="font-bold text-white">&quot;Add&quot;</span> — LevelUP AI appears on your home screen
+                  </p>
+                </div>
+              </div>
+              <div className="bg-green-500/10 rounded-xl p-3 border border-green-500/20">
+                <p className="text-[11px] text-green-400 font-medium">
+                  ✨ Once installed, LevelUP AI launches full-screen like a native app with offline support.
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-white">Install on this device</p>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">1</span>
+                  <p className="text-sm text-textSecondary">
+                    Tap the <span className="font-bold text-white">⋮ menu</span> in your browser
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-[11px] font-bold text-blue-400 shrink-0">2</span>
+                  <p className="text-sm text-textSecondary">
+                    Tap <span className="font-bold text-white">&quot;Install app&quot;</span> or <span className="font-bold text-white">&quot;Add to Home screen&quot;</span>
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+          <button
+            onClick={() => setShowGuide(false)}
+            className="text-xs text-primary font-semibold"
+          >
+            ← Back
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -71,7 +71,7 @@ export default function DashboardPage() {
     <main className="p-4 max-w-md mx-auto space-y-6 pt-8 pb-10">
       <header className="flex justify-between items-end mb-6">
         <div>
-          <PageHeader title="Dashboard" subtitle="Data from last 30 days" />
+          <PageHeader title="Dashboard" />
         </div>
         <Link href="/settings" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center active:scale-95 transition-transform">
           <Settings2 className="w-5 h-5 text-textPrimary" />
