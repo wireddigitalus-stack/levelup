@@ -8,6 +8,7 @@ import {
   Calendar, User, Lightbulb, Zap
 } from "lucide-react";
 import { clsx } from "clsx";
+import FormattedAIMessage from "./FormattedAIMessage";
 import { useApp } from "@/context/AppContext";
 
 // Page-aware context and quick prompts
@@ -285,7 +286,11 @@ TOTAL SHOTS LOGGED: ${shots.length}`;
                     <span className="text-xs text-green-400 font-bold">SPOTTER</span>
                   </div>
                 )}
-                <div className="whitespace-pre-wrap text-[13px]">{msg.text}</div>
+                {msg.role === "spotter" ? (
+                  <FormattedAIMessage text={msg.text} />
+                ) : (
+                  <div className="whitespace-pre-wrap text-[13px]">{msg.text}</div>
+                )}
               </div>
             ))}
 
