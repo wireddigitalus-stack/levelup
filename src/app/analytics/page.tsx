@@ -7,7 +7,7 @@ import {
   BarChart, Bar, Cell, ScatterChart, Scatter, AreaChart, Area
 } from "recharts";
 import {
-  Brain, TrendingUp, Thermometer, Send, Loader2, ChevronDown, Zap, Activity, Target, Filter
+  Brain, TrendingUp, Thermometer, Send, Loader2, ChevronDown, Zap, Activity, Target, Filter, X
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import FormattedAIMessage from "@/components/spotter/FormattedAIMessage";
@@ -26,6 +26,7 @@ export default function AnalyticsPage() {
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiMessages, setAiMessages] = useState<{ role: "user" | "spotter"; text: string }[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
+  const [showSpotter, setShowSpotter] = useState(true);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -387,6 +388,21 @@ export default function AnalyticsPage() {
       </div>
 
       {/* AI Insights — Ask Spotter */}
+      {!showSpotter ? (
+        <button
+          onClick={() => setShowSpotter(true)}
+          className="w-full rounded-2xl border border-[#2C2C2E] bg-gradient-to-r from-[#1A1A2E] to-[#16213E] px-5 py-4 flex items-center gap-3 active:scale-[0.98] transition-all"
+        >
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
+            <Brain className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-semibold text-white">Ask Spotter</p>
+            <p className="text-[10px] text-white/40">Tap to open AI analyst</p>
+          </div>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+        </button>
+      ) : (
       <div className="relative overflow-hidden rounded-2xl border border-[#2C2C2E] bg-gradient-to-br from-[#1A1A2E] via-[#16213E] to-[#0F3460] flex flex-col">
         {/* Animated glow background */}
         <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -415,6 +431,12 @@ export default function AnalyticsPage() {
                 Clear
               </button>
             )}
+            <button
+              onClick={() => { setShowSpotter(false); setAiMessages([]); setAiPrompt(""); }}
+              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+            >
+              <X className="w-4 h-4 text-white/50" />
+            </button>
           </div>
         </div>
 
@@ -504,6 +526,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </div>
+      )}
     </main>
   );
 }
