@@ -126,9 +126,6 @@ export default function WeatherCard() {
           <div className="flex items-center gap-1.5 mt-0.5">
             <MapPin className="w-3 h-3 text-green-400" />
             <span className="text-[10px] text-textSecondary">{weather.location}</span>
-            {weather.source === "mock" && (
-              <span className="text-[8px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded-full font-bold">DEMO</span>
-            )}
           </div>
         </div>
         <button
