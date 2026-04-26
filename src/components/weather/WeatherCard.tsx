@@ -121,16 +121,19 @@ export default function WeatherCard() {
     <div className="ios-card space-y-3 border border-[#2C2C2E] bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A]">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <MapPin className="w-3.5 h-3.5 text-green-400" />
-          <span className="text-xs font-medium text-textSecondary">{weather.location}</span>
-          {weather.source === "mock" && (
-            <span className="text-[8px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded-full font-bold">DEMO</span>
-          )}
+        <div>
+          <h3 className="text-xs font-semibold text-white tracking-wide">Weather Where You Are</h3>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <MapPin className="w-3 h-3 text-green-400" />
+            <span className="text-[10px] text-textSecondary">{weather.location}</span>
+            {weather.source === "mock" && (
+              <span className="text-[8px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded-full font-bold">DEMO</span>
+            )}
+          </div>
         </div>
         <button
           onClick={fetchWeather}
-          className="w-6 h-6 rounded-full bg-[#2C2C2E] flex items-center justify-center active:scale-90 transition-transform"
+          className="w-7 h-7 rounded-full bg-[#2C2C2E] flex items-center justify-center active:scale-90 transition-transform"
           disabled={loading}
         >
           <RefreshCw className={`w-3 h-3 text-textSecondary ${loading ? "animate-spin" : ""}`} />
