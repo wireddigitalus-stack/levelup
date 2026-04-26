@@ -7,13 +7,13 @@ import SpotterFAB from "@/components/spotter/SpotterFAB";
 
 
 export const metadata: Metadata = {
-  title: "LevelUP",
+  title: "SubsonicDNA",
   description: "ELR Rimfire Lot Testing & Performance Tracker",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "LevelUP",
+    title: "SubsonicDNA",
   },
 };
 

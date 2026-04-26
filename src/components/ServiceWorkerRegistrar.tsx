@@ -10,17 +10,17 @@ export function ServiceWorkerRegistrar() {
       navigator.serviceWorker
         .register("/sw.js")
         .then((reg) => {
-          console.log("[LevelUP] SW registered:", reg.scope);
+          console.log("[SubsonicDNA] SW registered:", reg.scope);
         })
         .catch((err) => {
-          console.warn("[LevelUP] SW registration failed:", err);
+          console.warn("[SubsonicDNA] SW registration failed:", err);
         });
     } else if (process.env.NODE_ENV === "development" && "serviceWorker" in navigator) {
       // In dev, UNREGISTER any existing service worker to prevent stale caching
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((reg) => {
           reg.unregister();
-          console.log("[LevelUP] Dev mode: Unregistered stale SW");
+          console.log("[SubsonicDNA] Dev mode: Unregistered stale SW");
         });
       });
     }

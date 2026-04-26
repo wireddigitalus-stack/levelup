@@ -1,5 +1,5 @@
 // ============================================================
-// LevelUP — Data Service (Supabase + localStorage)
+// SubsonicDNA — Data Service (Supabase + localStorage)
 //
 // This is the ONLY file that touches storage. Every component
 // reads/writes through AppContext → dataService.
@@ -68,12 +68,12 @@ export const DEFAULT_SETTINGS: AppSettings = {
 
 // ── localStorage fallback helpers ─────────────────────────────
 const KEYS = {
-  user: "levelup_user",
-  rifles: "levelup_rifles",
-  ammo: "levelup_ammo",
-  sessions: "levelup_sessions",
-  shots: "levelup_shots",
-  settings: "levelup_settings",
+  user: "subsonicdna_user",
+  rifles: "subsonicdna_rifles",
+  ammo: "subsonicdna_ammo",
+  sessions: "subsonicdna_sessions",
+  shots: "subsonicdna_shots",
+  settings: "subsonicdna_settings",
 } as const;
 
 function isClient(): boolean {

@@ -353,7 +353,7 @@ export default function SettingsPage() {
             <Bluetooth className="w-4 h-4 text-textSecondary" />
             <div>
               <p className="text-sm font-medium">Auto-Sync Cloud</p>
-              <p className="text-xs text-textSecondary">Backup data to LevelUP Cloud</p>
+              <p className="text-xs text-textSecondary">Backup data to SubsonicDNA Cloud</p>
             </div>
           </div>
           <Toggle value={autoSync} onChange={setAutoSync} />
@@ -793,7 +793,7 @@ function InstallAppCard() {
           <Check className="w-5 h-5 text-green-400" />
           <div>
             <p className="text-sm font-medium text-green-400">Saved</p>
-            <p className="text-xs text-textSecondary">LevelUP AI is saved to your device</p>
+            <p className="text-xs text-textSecondary">SubsonicDNA is saved to your device</p>
           </div>
         </div>
       </div>
@@ -874,13 +874,13 @@ function InstallAppCard() {
                 <div className="flex items-start gap-3">
                   <span className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400 shrink-0">4</span>
                   <p className="text-sm text-textSecondary">
-                    Tap <span className="font-bold text-white">&quot;Add&quot;</span> — LevelUP AI appears on your home screen
+                    Tap <span className="font-bold text-white">&quot;Add&quot;</span> — SubsonicDNA appears on your home screen
                   </p>
                 </div>
               </div>
               <div className="bg-green-500/10 rounded-xl p-3 border border-green-500/20">
                 <p className="text-xs text-green-400 font-medium">
-                  ✨ Once installed, LevelUP AI launches full-screen like a native app with offline support.
+                  ✨ Once installed, SubsonicDNA launches full-screen like a native app with offline support.
                 </p>
               </div>
             </>
@@ -915,7 +915,7 @@ function InstallAppCard() {
       {/* Version Badge */}
       <div className="flex flex-col items-center gap-1 pt-4 pb-2">
         <p className="text-[10px] text-textSecondary/50 font-mono tracking-wider">
-          LevelUP AI · v0.9.0 Beta
+          SubsonicDNA · v0.9.0 Beta
         </p>
         <p className="text-[9px] text-textSecondary/30 font-mono">
           Build 042526 · Tri-Cities, TN

@@ -1,5 +1,5 @@
 // ============================================================
-// LevelUP — Centralized Mock Data
+// SubsonicDNA — Centralized Mock Data
 // This file is the single source of truth for all demo data.
 // When Supabase is wired up, we replace these exports with
 // real queries and the rest of the app stays unchanged.
@@ -71,7 +71,7 @@ export interface UserProfile {
 export const mockUser: UserProfile = {
   id: "usr_001",
   fullName: "Allen Hurley",
-  email: "allen.hurley@levelup-ai.com",
+  email: "allen.hurley@subsonicdna.com",
 };
 
 // ---------- Rifles ----------

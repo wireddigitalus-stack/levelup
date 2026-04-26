@@ -1,5 +1,5 @@
 // ============================================================
-// LevelUP — Rimfire Ballistics Engine
+// SubsonicDNA — Rimfire Ballistics Engine
 // Simplified .22LR trajectory model using segmented G1 drag.
 // This is NOT a full AB Quantum solver — it's purpose-built
 // for rimfire lot testing: drop tables, hit probability,
