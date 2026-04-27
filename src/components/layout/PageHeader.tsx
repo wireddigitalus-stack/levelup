@@ -27,7 +27,7 @@ export default function PageHeader({ title, subtitle }: PageHeaderProps) {
           {title}
         </span>
       </div>
-      <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-green-400 mt-1 ml-[36px]">
+      <p className="text-[8px] font-bold tracking-[0.12em] uppercase text-green-400 mt-1 ml-[36px]">
         Precision Ammo Sequencing &amp; Ballistics
       </p>
       {subtitle && (
