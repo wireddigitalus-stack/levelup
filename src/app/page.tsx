@@ -10,6 +10,7 @@ import { useApp } from "@/context/AppContext";
 import { getConfidenceProfile, getBCForAmmo, getTransonicRange } from "@/lib/ballistics";
 import WeatherCard from "@/components/weather/WeatherCard";
 import PageHeader from "@/components/layout/PageHeader";
+import DNAMatchScore from "@/components/DNAMatchScore";
 
 export default function DashboardPage() {
   const {
@@ -114,14 +115,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Pairing Grade + ES/SD Cards */}
+      {/* DNA Match Score + ES/SD Cards */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] text-center py-4">
-          <span className="text-xs text-textSecondary font-medium block mb-1">Grade</span>
-          <p className="text-4xl font-black" style={{ color: grade.color }}>
-            {grade.grade}
-          </p>
-          <p className="text-xs text-textSecondary mt-1">{grade.score}/100</p>
+        <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A] flex items-center justify-center py-3">
+          <DNAMatchScore grade={grade.grade} score={grade.score} color={grade.color} />
         </div>
         <div className="ios-card bg-gradient-to-br from-[#1C1C1E] to-[#0A0A0A]">
           <div className="flex items-center gap-1.5 mb-1">
