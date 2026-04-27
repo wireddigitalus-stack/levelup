@@ -70,17 +70,6 @@ export default function DNAMatchScore({ grade, score, color }: DNAMatchScoreProp
 
       {/* Helix container */}
       <div className="relative" style={{ width, height }}>
-        {/* Background glow */}
-        {!isEmpty && (
-          <div
-            className="absolute inset-0 rounded-full blur-2xl transition-opacity duration-1000"
-            style={{
-              background: `radial-gradient(ellipse at center, ${color}40 0%, transparent 70%)`,
-              opacity: glowOpacity,
-            }}
-          />
-        )}
-
         <svg
           viewBox={`0 0 ${width} ${height}`}
           width={width}
@@ -98,33 +87,7 @@ export default function DNAMatchScore({ grade, score, color }: DNAMatchScoreProp
             </filter>
 
             {/* Strand gradient */}
-            <linearGradient id="strandGradA" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isEmpty ? "#3A3A3C" : color} stopOpacity={isEmpty ? 0.3 : 0.7} />
-              <stop offset="100%" stopColor={isEmpty ? "#3A3A3C" : color} stopOpacity={isEmpty ? 0.15 : 0.3} />
-            </linearGradient>
-            <linearGradient id="strandGradB" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isEmpty ? "#3A3A3C" : color} stopOpacity={isEmpty ? 0.15 : 0.3} />
-              <stop offset="100%" stopColor={isEmpty ? "#3A3A3C" : color} stopOpacity={isEmpty ? 0.3 : 0.7} />
-            </linearGradient>
           </defs>
-
-          {/* Strand A */}
-          <path
-            d={toPath(strandAPoints)}
-            fill="none"
-            stroke="url(#strandGradA)"
-            strokeWidth={2}
-            strokeLinecap="round"
-          />
-
-          {/* Strand B */}
-          <path
-            d={toPath(strandBPoints)}
-            fill="none"
-            stroke="url(#strandGradB)"
-            strokeWidth={2}
-            strokeLinecap="round"
-          />
 
           {/* Rungs (base pairs) */}
           {rungs.map((rung) => (
