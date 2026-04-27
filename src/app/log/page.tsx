@@ -8,6 +8,7 @@ import {
 import { clsx } from "clsx";
 import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/layout/PageHeader";
+import SequencingOverlay from "@/components/SequencingOverlay";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -52,6 +53,7 @@ export default function LogShotPage() {
   const [scanImage, setScanImage] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [scanError, setScanError] = useState("");
+  const [scanSequencing, setScanSequencing] = useState(false);
 
   // Snap Chrono state
   const chronoInputRef = useRef<HTMLInputElement>(null);
@@ -59,6 +61,7 @@ export default function LogShotPage() {
   const [chronoImage, setChronoImage] = useState<string | null>(null);
   const [chronoResult, setChronoResult] = useState<ChronoResult | null>(null);
   const [chronoError, setChronoError] = useState("");
+  const [chronoSequencing, setChronoSequencing] = useState(false);
 
   // Mock Bluetooth state
   type BtState = "idle" | "scanning" | "connecting" | "synced";
@@ -123,6 +126,7 @@ export default function LogShotPage() {
       const imageData = ev.target?.result as string;
       setScanImage(imageData);
       setScanState("scanning");
+      setScanSequencing(true);
       setScanError("");
       setScanResult(null);
 
@@ -156,6 +160,7 @@ export default function LogShotPage() {
       const imageData = ev.target?.result as string;
       setChronoImage(imageData);
       setChronoState("reading");
+      setChronoSequencing(true);
       setChronoError("");
       setChronoResult(null);
       try {
@@ -229,22 +234,23 @@ export default function LogShotPage() {
         </button>
       )}
 
-      {scanState === "scanning" && (
-        <div className="ios-card space-y-4">
-          <div className="flex items-center gap-3">
-            <Crosshair className="w-5 h-5 text-green-400 animate-spin" />
-            <div>
-              <p className="font-bold text-sm text-green-400">Spotter is Reading...</p>
-              <p className="text-xs text-textSecondary">Extracting handwritten data via AI vision</p>
-            </div>
-          </div>
+      {(scanState === "scanning" || scanSequencing) && (
+        <div className="space-y-4">
           {scanImage && (
-            <div className="relative rounded-xl overflow-hidden">
-              <img src={scanImage} alt="Scanned sheet" className="w-full h-48 object-cover opacity-60" />
-              <div className="absolute inset-0 bg-gradient-to-b from-green-400/10 to-transparent" />
-              <div className="absolute left-0 right-0 h-[2px] bg-green-400 shadow-[0_0_12px_rgba(74,222,128,0.8)] scan-line-anim" />
+            <div className="ios-card">
+              <div className="relative rounded-xl overflow-hidden">
+                <img src={scanImage} alt="Scanned sheet" className="w-full h-48 object-cover opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-green-400/10 to-transparent" />
+                <div className="absolute left-0 right-0 h-[2px] bg-green-400 shadow-[0_0_12px_rgba(74,222,128,0.8)] scan-line-anim" />
+              </div>
             </div>
           )}
+          <SequencingOverlay
+            active={scanSequencing}
+            mode="scan"
+            duration={4200}
+            onComplete={() => setScanSequencing(false)}
+          />
         </div>
       )}
 
@@ -369,22 +375,23 @@ export default function LogShotPage() {
         </button>
       )}
 
-      {chronoState === "reading" && (
-        <div className="ios-card space-y-4">
-          <div className="flex items-center gap-3">
-            <Gauge className="w-5 h-5 text-purple-400 animate-pulse" />
-            <div>
-              <p className="font-bold text-sm text-purple-400">Reading Chrono Screen...</p>
-              <p className="text-xs text-textSecondary">Extracting velocity data via AI vision</p>
-            </div>
-          </div>
+      {(chronoState === "reading" || chronoSequencing) && (
+        <div className="space-y-4">
           {chronoImage && (
-            <div className="relative rounded-xl overflow-hidden">
-              <img src={chronoImage} alt="Chrono screen" className="w-full h-48 object-cover opacity-60" />
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-400/10 to-transparent" />
-              <div className="absolute left-0 right-0 h-[2px] bg-purple-400 shadow-[0_0_12px_rgba(167,139,250,0.8)] scan-line-anim" />
+            <div className="ios-card">
+              <div className="relative rounded-xl overflow-hidden">
+                <img src={chronoImage} alt="Chrono screen" className="w-full h-48 object-cover opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-400/10 to-transparent" />
+                <div className="absolute left-0 right-0 h-[2px] bg-purple-400 shadow-[0_0_12px_rgba(167,139,250,0.8)] scan-line-anim" />
+              </div>
             </div>
           )}
+          <SequencingOverlay
+            active={chronoSequencing}
+            mode="chrono"
+            duration={3800}
+            onComplete={() => setChronoSequencing(false)}
+          />
         </div>
       )}
 

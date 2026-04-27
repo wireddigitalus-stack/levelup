@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowLeft, Zap, Crosshair, Clock, Gauge } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { ArrowLeft, Zap, Crosshair, Clock, Gauge, SlidersHorizontal, RotateCcw, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/layout/PageHeader";
-import { calculateTrajectory, getBCForAmmo, getTransonicRange, type TrajectoryPoint } from "@/lib/ballistics";
+import { calculateTrajectory, getBCForAmmo, getTransonicRange, trueBC, type TrajectoryPoint } from "@/lib/ballistics";
 
 export default function DopePage() {
   const { rifles, ammo, selectedRifleId, selectedAmmoId, setSelectedRifleId, setSelectedAmmoId, shots } = useApp();
@@ -13,6 +13,13 @@ export default function DopePage() {
   const [zeroRange, setZeroRange] = useState(50);
   const [trajectory, setTrajectory] = useState<TrajectoryPoint[]>([]);
   const [transonic, setTransonic] = useState(0);
+
+  // BC Truing state
+  const [truingOpen, setTruingOpen] = useState(false);
+  const [truingRange, setTruingRange] = useState("100");
+  const [truingDrop, setTruingDrop] = useState("");
+  const [truedBCValue, setTruedBCValue] = useState<number | null>(null);
+  const [truingResult, setTruingResult] = useState<{ truedBC: number; predictedDrop: number; originalBC: number } | null>(null);
 
   const selectedAmmo = ammo.find((a) => a.id === selectedAmmoId);
   const selectedRifle = rifles.find((r) => r.id === selectedRifleId);
@@ -25,11 +32,43 @@ export default function DopePage() {
 
   useEffect(() => {
     if (!selectedAmmo) return;
-    const bc = getBCForAmmo(selectedAmmo.brand, selectedAmmo.model);
-    const traj = calculateTrajectory(avgMV, 40, bc, zeroRange, 300);
+    const catalogBC = getBCForAmmo(selectedAmmo.brand, selectedAmmo.model);
+    const activeBC = truedBCValue ?? catalogBC;
+    const traj = calculateTrajectory(avgMV, 40, activeBC, zeroRange, 300);
     setTrajectory(traj);
-    setTransonic(getTransonicRange(avgMV, bc));
-  }, [avgMV, zeroRange, selectedAmmo]);
+    setTransonic(getTransonicRange(avgMV, activeBC));
+  }, [avgMV, zeroRange, selectedAmmo, truedBCValue]);
+
+  // Reset trued BC when ammo changes
+  useEffect(() => {
+    setTruedBCValue(null);
+    setTruingResult(null);
+    setTruingDrop("");
+  }, [selectedAmmoId]);
+
+  const handleTrueBC = useCallback(() => {
+    if (!selectedAmmo || !truingDrop) return;
+    const range = parseInt(truingRange);
+    const drop = parseFloat(truingDrop);
+    if (isNaN(range) || isNaN(drop) || range <= zeroRange) return;
+
+    const catalogBC = getBCForAmmo(selectedAmmo.brand, selectedAmmo.model);
+    const result = trueBC(avgMV, zeroRange, range, -drop, 40); // negative because drop is below
+    if (result) {
+      setTruedBCValue(result.truedBC);
+      setTruingResult({
+        truedBC: result.truedBC,
+        predictedDrop: result.predictedDrop,
+        originalBC: catalogBC,
+      });
+    }
+  }, [selectedAmmo, truingDrop, truingRange, avgMV, zeroRange]);
+
+  const resetTruing = useCallback(() => {
+    setTruedBCValue(null);
+    setTruingResult(null);
+    setTruingDrop("");
+  }, []);
 
   // Color coding for drop values
   const getDropColor = (drop: number, range: number) => {
@@ -137,7 +176,128 @@ export default function DopePage() {
         <p className="text-xs text-green-400">
           Calculated from {ammoShots.length} logged shots •{" "}
           {selectedAmmo?.brand} {selectedAmmo?.model} #{selectedAmmo?.lotNumber}
+          {truedBCValue && " • BC Trued"}
         </p>
+      </div>
+
+      {/* ========== BC TRUING PANEL ========== */}
+      <div className="ios-card overflow-hidden">
+        <button
+          onClick={() => setTruingOpen(!truingOpen)}
+          className="w-full flex items-center justify-between py-1 active:opacity-70"
+        >
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="w-4 h-4 text-cyan-400" />
+            <span className="font-semibold text-sm">Real-World Truing</span>
+            {truedBCValue && (
+              <span className="text-[10px] bg-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded-full font-bold">TRUED</span>
+            )}
+          </div>
+          <span className="text-xs text-textSecondary">{truingOpen ? "▲" : "▼"}</span>
+        </button>
+
+        {truingOpen && (
+          <div className="mt-3 pt-3 border-t border-[#2C2C2E] space-y-4">
+            <p className="text-xs text-textSecondary leading-relaxed">
+              Calibrate your ballistic model to match observed impacts. Enter the range you shot at and the actual drop you measured.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                  Range (yds)
+                </label>
+                <select
+                  className="ios-input appearance-none bg-black text-sm w-full"
+                  value={truingRange}
+                  onChange={(e) => setTruingRange(e.target.value)}
+                >
+                  {[50, 75, 100, 125, 150, 175, 200, 250, 300].filter(r => r > zeroRange).map((r) => (
+                    <option key={r} value={r}>{r} yards</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block">
+                  Actual Drop (in)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g. 11.5"
+                  className="ios-input bg-black text-sm w-full"
+                  value={truingDrop}
+                  onChange={(e) => setTruingDrop(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Current predicted vs what they'll enter */}
+            {truingDrop && !truingResult && (() => {
+              const range = parseInt(truingRange);
+              const currentPoint = trajectory.find(p => p.rangeYds === range);
+              return currentPoint ? (
+                <div className="bg-[#0A0A0A] rounded-xl p-3 text-xs space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-textSecondary">Predicted drop at {range}y:</span>
+                    <span className="font-mono font-semibold">{Math.abs(currentPoint.dropInches).toFixed(1)}&quot;</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-textSecondary">Your observed drop:</span>
+                    <span className="font-mono font-semibold text-cyan-400">{parseFloat(truingDrop).toFixed(1)}&quot;</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-textSecondary">Difference:</span>
+                    <span className="font-mono font-semibold text-yellow-400">
+                      {Math.abs(Math.abs(currentPoint.dropInches) - parseFloat(truingDrop)).toFixed(1)}&quot;
+                    </span>
+                  </div>
+                </div>
+              ) : null;
+            })()}
+
+            {/* Truing result */}
+            {truingResult && (
+              <div className="bg-cyan-500/5 border border-cyan-500/20 rounded-xl p-3 space-y-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs font-bold text-cyan-400">BC Trued Successfully</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-black/40 rounded-lg p-2 text-center">
+                    <p className="text-textSecondary mb-0.5">Catalog BC</p>
+                    <p className="font-mono font-bold text-white/50 line-through">{truingResult.originalBC.toFixed(3)}</p>
+                  </div>
+                  <div className="bg-black/40 rounded-lg p-2 text-center">
+                    <p className="text-textSecondary mb-0.5">Trued BC</p>
+                    <p className="font-mono font-bold text-cyan-400">{truingResult.truedBC.toFixed(3)}</p>
+                  </div>
+                </div>
+                <p className="text-[10px] text-textSecondary text-center mt-1">
+                  Dope card recalculated with trued BC • All ranges updated
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleTrueBC}
+                disabled={!truingDrop || parseFloat(truingDrop) === 0}
+                className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all bg-gradient-to-r from-cyan-500 to-blue-500 text-white active:scale-[0.97] disabled:opacity-30 disabled:active:scale-100"
+              >
+                Calculate Trued BC
+              </button>
+              {truedBCValue && (
+                <button
+                  onClick={resetTruing}
+                  className="px-3 py-2.5 rounded-xl font-semibold text-sm bg-[#2C2C2E] text-textSecondary active:scale-[0.97]"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Trajectory Table */}

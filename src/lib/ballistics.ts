@@ -232,6 +232,70 @@ export function getTransonicRange(
 }
 
 /**
+ * True (calibrate) the BC using observed real-world drop.
+ * Uses binary search to find the BC that produces the observed drop
+ * at the given range, for the given MV and zero range.
+ * 
+ * @param muzzleVelocity — chronographed MV (fps)
+ * @param zeroRange — where the rifle is zeroed (yards)
+ * @param observedRange — the range at which drop was measured (yards)
+ * @param observedDropInches — the actual measured drop in inches (positive = below zero)
+ * @param bulletWeight — grains (default 40)
+ * @returns trued BC value, or null if unable to converge
+ */
+export function trueBC(
+  muzzleVelocity: number,
+  zeroRange: number,
+  observedRange: number,
+  observedDropInches: number,
+  bulletWeight: number = 40,
+): { truedBC: number; predictedDrop: number; iterations: number } | null {
+  let bcLow = 0.05;
+  let bcHigh = 0.30;
+  let bestBC = DEFAULT_BC;
+  let bestDrop = 0;
+  const maxIterations = 50;
+  const tolerance = 0.05; // within 0.05" is close enough
+
+  for (let i = 0; i < maxIterations; i++) {
+    const bcMid = (bcLow + bcHigh) / 2;
+    const traj = calculateTrajectory(muzzleVelocity, bulletWeight, bcMid, zeroRange, observedRange);
+    const point = traj.find((p) => p.rangeYds === observedRange);
+    if (!point) return null;
+
+    bestBC = bcMid;
+    bestDrop = point.dropInches;
+
+    // Drop is negative (below sight line), observed is entered as positive
+    // So we compare absolute values
+    const predictedAbsDrop = Math.abs(point.dropInches);
+    const observedAbsDrop = Math.abs(observedDropInches);
+
+    if (Math.abs(predictedAbsDrop - observedAbsDrop) < tolerance) {
+      return {
+        truedBC: Math.round(bcMid * 1000) / 1000,
+        predictedDrop: point.dropInches,
+        iterations: i + 1,
+      };
+    }
+
+    // If predicted drop is less than observed, bullet is retaining too much velocity
+    // → BC is too high → search lower
+    if (predictedAbsDrop < observedAbsDrop) {
+      bcHigh = bcMid;
+    } else {
+      bcLow = bcMid;
+    }
+  }
+
+  return {
+    truedBC: Math.round(bestBC * 1000) / 1000,
+    predictedDrop: bestDrop,
+    iterations: maxIterations,
+  };
+}
+
+/**
  * Temperature sensitivity: estimate MV change per degree F.
  * For .22LR rimfire, typical sensitivity is ~1.5 fps per °F.
  */
