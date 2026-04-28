@@ -13,6 +13,7 @@ export default function DopePage() {
   const [zeroRange, setZeroRange] = useState(50);
   const [trajectory, setTrajectory] = useState<TrajectoryPoint[]>([]);
   const [transonic, setTransonic] = useState(0);
+  const [unit, setUnit] = useState<'moa' | 'mil'>('moa');
 
   // BC Truing state
   const [truingOpen, setTruingOpen] = useState(false);
@@ -145,6 +146,26 @@ export default function DopePage() {
                 }`}
               >
                 {z}y
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-textSecondary uppercase tracking-wider mb-1.5 block ml-1">
+            Adjustment Unit
+          </label>
+          <div className="flex gap-2">
+            {(['moa', 'mil'] as const).map((u) => (
+              <button
+                key={u}
+                onClick={() => setUnit(u)}
+                className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  unit === u
+                    ? "bg-gradient-to-r from-green-400 to-emerald-500 text-black"
+                    : "bg-[#2C2C2E] text-textSecondary"
+                }`}
+              >
+                {u.toUpperCase()}
               </button>
             ))}
           </div>
@@ -314,7 +335,7 @@ export default function DopePage() {
           <div>Range</div>
           <div className="text-center">Vel</div>
           <div className="text-center">Drop</div>
-          <div className="text-center">MOA</div>
+          <div className="text-center">{unit === 'moa' ? 'MOA' : 'MIL'}</div>
           <div className="text-center">TOF</div>
           <div className="text-center">Energy</div>
         </div>
@@ -347,7 +368,10 @@ export default function DopePage() {
               {point.dropInches.toFixed(1)}&quot;
             </div>
             <div className="text-center font-mono text-textSecondary">
-              {point.dropMoa > 0 ? "+" : ""}{point.dropMoa.toFixed(1)}
+              {unit === 'moa'
+                ? `${point.dropMoa > 0 ? "+" : ""}${point.dropMoa.toFixed(1)}`
+                : `${point.dropMil > 0 ? "+" : ""}${point.dropMil.toFixed(1)}`
+              }
             </div>
             <div className="text-center font-mono text-textSecondary">
               {point.tofSeconds.toFixed(3)}s
