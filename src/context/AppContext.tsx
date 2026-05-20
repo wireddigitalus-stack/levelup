@@ -18,6 +18,7 @@ import {
   type AmmoLot,
   type Session,
   type ShotLog,
+  type CleaningEvent,
 } from "@/lib/mockData";
 
 import * as ds from "@/lib/dataService";
@@ -30,6 +31,7 @@ interface AppContextType {
   ammo: AmmoLot[];
   sessions: Session[];
   shots: ShotLog[];
+  cleanings: CleaningEvent[];
   settings: AppSettings;
 
   // Mutations — Rifles
@@ -45,6 +47,9 @@ interface AppContextType {
   // Mutations — Shots & Sessions
   addShot: (shot: ShotLog) => void;
   addSession: (session: Session) => void;
+
+  // Mutations — Cleanings
+  addCleaning: (cleaning: CleaningEvent) => void;
 
   // Mutations — Settings
   updateSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
@@ -69,6 +74,10 @@ interface AppContextType {
   getLotCost: (lot: AmmoLot) => number;
   getLotCostPerRound: (lot: AmmoLot) => number;
 
+  // Cleaning helpers
+  getShotsSinceClean: (rifleId: string) => number;
+  getLastCleaning: (rifleId: string) => CleaningEvent | null;
+
   // Formatted helpers
   getAmmoLabel: (ammoId: string) => string;
   getRifleLabel: (rifleId: string) => string;
@@ -89,6 +98,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [ammo, setAmmo] = useState<AmmoLot[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [shots, setShots] = useState<ShotLog[]>([]);
+  const [cleanings, setCleanings] = useState<CleaningEvent[]>([]);
   const [settings, setSettings] = useState<AppSettings>(ds.DEFAULT_SETTINGS);
 
   // Filters
@@ -101,13 +111,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     async function loadData() {
       try {
-        const [loadedRifles, loadedAmmo, loadedSessions, loadedShots, loadedSettings] =
+        const [loadedRifles, loadedAmmo, loadedSessions, loadedShots, loadedSettings, loadedCleanings] =
           await Promise.all([
             ds.loadRifles(),
             ds.loadAmmoLots(),
             ds.loadSessions(),
             ds.loadShots(),
             ds.loadSettings(),
+            ds.loadCleanings(),
           ]);
 
         if (cancelled) return;
@@ -118,6 +129,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setAmmo(loadedAmmo);
         setSessions(loadedSessions);
         setShots(loadedShots);
+        setCleanings(loadedCleanings);
         setSettings(loadedSettings);
 
         if (loadedRifles.length > 0) setSelectedRifleId(loadedRifles[0].id);
@@ -131,6 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setAmmo(ds.getAmmoLots());
         setSessions(ds.getSessions());
         setShots(ds.getShots());
+        setCleanings(ds.getCleanings());
         setSettings(ds.getSettings());
       }
 
@@ -184,6 +197,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSessions(updated);
   };
 
+  // ── Cleaning mutations ──────────────────────────────────────
+  const addCleaningFn = async (cleaning: CleaningEvent) => {
+    const updated = await ds.addCleaning(cleaning);
+    setCleanings(updated);
+  };
+
   // ── Settings mutations ────────────────────────────────────
   const updateSettingFn = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     const updated = ds.updateSetting(key, value);
@@ -213,6 +232,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return rifle ? `${rifle.make} ${rifle.model} - ${rifle.barrelLength}` : "Unknown";
   };
 
+  // ── Cleaning helpers ────────────────────────────────────────
+  const getShotsSinceClean = (rifleId: string): number => {
+    const rifleCleanings = cleanings
+      .filter((c) => c.rifleId === rifleId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const lastClean = rifleCleanings[0];
+    if (!lastClean) {
+      // Never cleaned — count all shots for this rifle
+      return shots.filter((s) => s.rifleId === rifleId).length;
+    }
+    // Count shots after last cleaning date
+    return shots.filter(
+      (s) => s.rifleId === rifleId && new Date(s.timestamp) > new Date(lastClean.date)
+    ).length;
+  };
+
+  const getLastCleaning = (rifleId: string): CleaningEvent | null => {
+    const rifleCleanings = cleanings
+      .filter((c) => c.rifleId === rifleId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return rifleCleanings[0] || null;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -221,6 +263,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ammo,
         sessions: sessions,
         shots: shots,
+        cleanings,
         settings,
         addRifle,
         updateRifle,
@@ -230,6 +273,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         deleteAmmoLot,
         addShot,
         addSession,
+        addCleaning: addCleaningFn,
         updateSetting: updateSettingFn,
         clearAllData,
         selectedRifleId,
@@ -247,6 +291,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         getSessionShotData: getSessionShots,
         getLotCost: getLotInvestment,
         getLotCostPerRound: getCostPerRound,
+        getShotsSinceClean,
+        getLastCleaning,
         getAmmoLabel,
         getRifleLabel,
         isReady,

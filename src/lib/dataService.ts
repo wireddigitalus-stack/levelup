@@ -19,6 +19,7 @@ import type {
   Session,
   ShotLog,
   UserProfile,
+  CleaningEvent,
 } from "./mockData";
 
 import {
@@ -27,6 +28,7 @@ import {
   mockAmmo,
   mockSessions,
   mockShots,
+  mockCleanings,
 } from "./mockData";
 
 // ── Settings Type ─────────────────────────────────────────────
@@ -74,6 +76,7 @@ const KEYS = {
   sessions: "subsonicdna_sessions",
   shots: "subsonicdna_shots",
   settings: "subsonicdna_settings",
+  cleanings: "subsonicdna_cleanings",
 } as const;
 
 function isClient(): boolean {
@@ -607,4 +610,25 @@ export function updateSetting<K extends keyof AppSettings>(
 export function clearAllData(): void {
   if (!isClient()) return;
   Object.values(KEYS).forEach((key) => localStorage.removeItem(key));
+}
+
+// ── Barrel Cleaning Tracker ──────────────────────────────────────────
+export function getCleanings(): CleaningEvent[] {
+  return readLocal(KEYS.cleanings, mockCleanings);
+}
+
+export function saveCleanings(cleanings: CleaningEvent[]): void {
+  writeLocal(KEYS.cleanings, cleanings);
+}
+
+export async function loadCleanings(): Promise<CleaningEvent[]> {
+  // Local-only for now (no Supabase table)
+  return readLocal(KEYS.cleanings, mockCleanings);
+}
+
+export async function addCleaning(cleaning: CleaningEvent): Promise<CleaningEvent[]> {
+  const current = getCleanings();
+  const updated = [...current, cleaning];
+  writeLocal(KEYS.cleanings, updated);
+  return updated;
 }

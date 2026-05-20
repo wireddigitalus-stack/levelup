@@ -387,6 +387,111 @@ export default function AnalyticsPage() {
         ))}
       </div>
 
+      {/* ── Temperature Sensitivity Chart ── */}
+      {(() => {
+        // Group weather-stamped shots by session, compute avg temp + avg MV
+        const sessionMap = new Map<string, { temps: number[]; velocities: number[] }>();
+        filteredShots.forEach((s) => {
+          if (s.tempF != null) {
+            if (!sessionMap.has(s.sessionId)) sessionMap.set(s.sessionId, { temps: [], velocities: [] });
+            const entry = sessionMap.get(s.sessionId)!;
+            entry.temps.push(s.tempF);
+            entry.velocities.push(s.velocityFps);
+          }
+        });
+
+        const tempData = Array.from(sessionMap.entries()).map(([sessId, d]) => {
+          const sess = sessions.find(s => s.id === sessId);
+          return {
+            temp: Math.round(d.temps.reduce((a, b) => a + b, 0) / d.temps.length),
+            avgMV: Math.round(d.velocities.reduce((a, b) => a + b, 0) / d.velocities.length),
+            shots: d.velocities.length,
+            label: sess ? new Date(sess.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : sessId,
+          };
+        }).sort((a, b) => a.temp - b.temp);
+
+        // Linear regression for fps/°F
+        let slope = 0;
+        if (tempData.length >= 2) {
+          const n = tempData.length;
+          const sumX = tempData.reduce((s, d) => s + d.temp, 0);
+          const sumY = tempData.reduce((s, d) => s + d.avgMV, 0);
+          const sumXY = tempData.reduce((s, d) => s + d.temp * d.avgMV, 0);
+          const sumX2 = tempData.reduce((s, d) => s + d.temp * d.temp, 0);
+          slope = Math.round(((n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)) * 100) / 100;
+        }
+
+        if (tempData.length < 2) return null;
+
+        return (
+          <div className="ios-card p-0 overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#2C2C2E] bg-[#1C1C1E] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Thermometer className="w-4 h-4 text-orange-400" />
+                <h3 className="font-semibold text-sm">Temperature Sensitivity</h3>
+              </div>
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                Math.abs(slope) <= 1 ? "bg-green-500/20 text-green-400" :
+                Math.abs(slope) <= 2 ? "bg-yellow-500/20 text-yellow-400" :
+                "bg-red-500/20 text-red-400"
+              }`}>
+                {slope > 0 ? "+" : ""}{slope} fps/°F
+              </span>
+            </div>
+            <div className="px-4 pt-4 pb-2">
+              <ResponsiveContainer width="100%" height={200}>
+                <ScatterChart margin={{ top: 5, right: 10, bottom: 5, left: -15 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2C2C2E" />
+                  <XAxis
+                    dataKey="temp"
+                    type="number"
+                    domain={["dataMin - 2", "dataMax + 2"]}
+                    tick={{ fill: "#8E8E93", fontSize: 10 }}
+                    tickFormatter={(v: number) => `${v}°`}
+                    name="Temp"
+                  />
+                  <YAxis
+                    dataKey="avgMV"
+                    type="number"
+                    domain={["dataMin - 5", "dataMax + 5"]}
+                    tick={{ fill: "#8E8E93", fontSize: 10 }}
+                    name="Avg MV"
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "#1C1C1E", border: "1px solid #2C2C2E", borderRadius: "12px", fontSize: "12px" }}
+                    formatter={(value: number, name: string) => [
+                      name === "Avg MV" ? `${value} fps` : `${value}°F`,
+                      name === "Avg MV" ? "Avg Velocity" : "Temperature"
+                    ]}
+                    labelFormatter={() => ""}
+                  />
+                  <Scatter data={tempData} fill="#FF9F0A">
+                    {tempData.map((_, i) => (
+                      <Cell key={i} fill={i === 0 ? "#60A5FA" : i === tempData.length - 1 ? "#FF453A" : "#FF9F0A"} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="px-4 pb-3 flex flex-wrap gap-3 text-[10px] text-textSecondary">
+              <span>🔵 Coldest session</span>
+              <span>🟠 Mid-range</span>
+              <span>🔴 Warmest session</span>
+              <span>• {tempData.reduce((s, d) => s + d.shots, 0)} weather-stamped shots</span>
+            </div>
+            <div className="px-4 pb-3">
+              <p className="text-xs text-textSecondary leading-relaxed">
+                {Math.abs(slope) <= 1
+                  ? "✅ This ammo shows excellent temperature stability. MV barely changes across conditions."
+                  : Math.abs(slope) <= 2
+                  ? "⚠️ Moderate temperature sensitivity detected. Consider adjusting your zero when conditions shift significantly."
+                  : "🔴 High temperature sensitivity. This ammo's MV changes significantly with temperature — critical for long-range accuracy."}
+              </p>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* AI Insights — Ask Spotter */}
       {!showSpotter ? (
         <button

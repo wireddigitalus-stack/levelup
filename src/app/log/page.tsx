@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import {
   Bluetooth, Zap, Thermometer, Wind, Camera, X,
   ScanLine, Loader2, CheckCircle2, AlertTriangle, FileText, Crosshair, Gauge, Wifi, WifiOff
@@ -9,6 +9,7 @@ import { clsx } from "clsx";
 import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/layout/PageHeader";
 import SequencingOverlay from "@/components/SequencingOverlay";
+import type { ShotLog } from "@/lib/mockData";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -30,7 +31,7 @@ interface ChronoResult {
 }
 
 export default function LogShotPage() {
-  const { rifles, ammo, sessions } = useApp();
+  const { rifles, ammo, sessions, addShot } = useApp();
 
   const [selectedRifle, setSelectedRifle] = useState(rifles[0]?.id || "");
   const [selectedAmmo, setSelectedAmmo] = useState(ammo[0]?.id || "");
@@ -96,7 +97,98 @@ export default function LogShotPage() {
     setTimeout(() => setKestrelState("idle"), 8000);
   };
 
+  // ── Weather cache state ──────────────────────────────────────
+  interface WeatherCache {
+    tempF: number;
+    humidity: number;
+    pressureInHg: number;
+    densityAltitude: number;
+    location: string;
+    updatedAt: string;
+  }
+  const [weather, setWeather] = useState<WeatherCache | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+
+  const fetchWeather = useCallback(async () => {
+    setWeatherLoading(true);
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+      ).catch(() => null);
+
+      const lat = pos?.coords.latitude ?? 36.5;
+      const lon = pos?.coords.longitude ?? -82.5;
+      const res = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+      const json = await res.json();
+      if (json.data) {
+        setWeather({
+          tempF: Math.round(json.data.temp),
+          humidity: Math.round(json.data.humidity),
+          pressureInHg: Math.round((json.data.pressure * 0.02953) * 100) / 100,
+          densityAltitude: Math.round(json.data.densityAltitude),
+          location: json.data.location || "Range",
+          updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        });
+      }
+    } catch (err) {
+      console.warn("[Weather] Failed to fetch:", err);
+    } finally {
+      setWeatherLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeather();
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000); // refresh every 10 min
+    return () => clearInterval(interval);
+  }, [fetchWeather]);
+
+  // ── Log Shot handler ─────────────────────────────────────────
   const latestSession = sessions[0];
+  const [logSuccess, setLogSuccess] = useState(false);
+
+  const handleLogShot = useCallback(() => {
+    const mv = parseInt(muzzleVelocity);
+    if (!mv || !selectedRifle || !selectedAmmo) return;
+
+    const shot: ShotLog = {
+      id: `shot_${Date.now()}`,
+      sessionId: latestSession?.id || `sess_${Date.now()}`,
+      rifleId: selectedRifle,
+      ammoId: selectedAmmo,
+      isColdBore,
+      tunerSetting: parseInt(tunerSetting) || 0,
+      velocityFps: mv,
+      groupSizeMoa: 0,
+      poiVertical: 0,
+      poiHorizontal: 0,
+      vSpreadIn: parseFloat(vSpread) || undefined,
+      hSpreadIn: parseFloat(hSpread) || undefined,
+      elevation: parseFloat(elevation) || undefined,
+      elevationUnit,
+      windSpeed: parseFloat(windSpeed) || undefined,
+      windDirection: windDirection || undefined,
+      roundNotes: roundNotes.filter(n => n.trim()).join("; ") || undefined,
+      timestamp: new Date().toISOString(),
+      photoUrl: groupPhoto || undefined,
+      // Weather stamp
+      tempF: weather?.tempF,
+      humidity: weather?.humidity,
+      pressureInHg: weather?.pressureInHg,
+      densityAltitude: weather?.densityAltitude,
+    };
+
+    addShot(shot);
+    setLogSuccess(true);
+    setTimeout(() => setLogSuccess(false), 2500);
+
+    // Reset form
+    setMuzzleVelocity("");
+    setIsColdBore(false);
+    setGroupPhoto(null);
+    setRoundNotes(["", "", "", "", ""]);
+  }, [muzzleVelocity, selectedRifle, selectedAmmo, isColdBore, tunerSetting, vSpread, hSpread, elevation, elevationUnit, windSpeed, windDirection, roundNotes, groupPhoto, weather, latestSession, addShot]);
+
 
   const getTransonicDistance = (mv: string) => {
     const v = parseInt(mv);
@@ -207,7 +299,7 @@ export default function LogShotPage() {
         .scan-line-anim { animation: scan-line 2s ease-in-out infinite; }
       `}</style>
 
-      <header className="mb-6">
+      <header className="mb-2">
         <PageHeader title="Log" />
         {latestSession && (
           <p className="text-textSecondary text-sm mt-1">
@@ -215,6 +307,51 @@ export default function LogShotPage() {
           </p>
         )}
       </header>
+
+      {/* ========== LIVE WEATHER STAMP BAR ========== */}
+      <div className="ios-card py-2.5 px-3">
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-1.5">
+            <Thermometer className="w-3.5 h-3.5 text-green-400" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-green-400">Live Weather Stamp</span>
+          </div>
+          {weather && (
+            <button onClick={fetchWeather} className="text-[10px] text-textSecondary active:opacity-50">
+              Updated {weather.updatedAt} ↻
+            </button>
+          )}
+        </div>
+        {weatherLoading && !weather ? (
+          <div className="flex items-center gap-2 py-1">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-textSecondary" />
+            <span className="text-xs text-textSecondary">Fetching conditions...</span>
+          </div>
+        ) : weather ? (
+          <div className="grid grid-cols-4 gap-2 text-center">
+            <div>
+              <p className="text-sm font-bold">{weather.tempF}°F</p>
+              <p className="text-[9px] text-textSecondary uppercase">Temp</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold">{weather.humidity}%</p>
+              <p className="text-[9px] text-textSecondary uppercase">Humidity</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold">{weather.pressureInHg}"</p>
+              <p className="text-[9px] text-textSecondary uppercase">Baro</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-cyan-400">{weather.densityAltitude.toLocaleString()}</p>
+              <p className="text-[9px] text-textSecondary uppercase">DA (ft)</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 py-1">
+            <WifiOff className="w-3.5 h-3.5 text-red-400" />
+            <span className="text-xs text-textSecondary">Weather unavailable — shots will log without stamp</span>
+          </div>
+        )}
+      </div>
 
       {/* ========== SCAN DATA SHEET ========== */}
       <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleScanCapture} />
@@ -761,8 +898,20 @@ export default function LogShotPage() {
         )}
       </div>
 
-      <button className="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-all text-lg shadow-lg shadow-green-500/20 mb-8">
-        Log Shot
+      {/* Success toast */}
+      {logSuccess && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-black font-bold text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-green-500/30 flex items-center gap-2 animate-pulse">
+          <CheckCircle2 className="w-4 h-4" />
+          Shot Logged {weather ? `• ${weather.tempF}°F` : ''}
+        </div>
+      )}
+
+      <button
+        onClick={handleLogShot}
+        disabled={!muzzleVelocity}
+        className="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-black font-extrabold py-4 rounded-xl active:scale-95 transition-all text-lg shadow-lg shadow-green-500/20 mb-8 disabled:opacity-30 disabled:active:scale-100"
+      >
+        Log Shot {weather ? `• ${weather.tempF}°F` : ''}
       </button>
     </main>
   );

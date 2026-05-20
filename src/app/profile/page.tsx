@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { User, Settings, LogOut, ChevronRight, Plus, Crosshair, Pencil, Trash2, Check, X } from "lucide-react";
+import { User, Settings, LogOut, ChevronRight, Plus, Crosshair, Pencil, Trash2, Check, X, Sparkles } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import PageHeader from "@/components/layout/PageHeader";
 import MicButton from "@/components/MicButton";
+import CleaningModal from "@/components/CleaningModal";
 import type { RifleProfile } from "@/lib/mockData";
 
 // Common rimfire rifle makes for dropdown
@@ -29,13 +30,15 @@ interface RifleFormData {
 const emptyForm: RifleFormData = { make: "", model: "", barrelLength: '20"', barrelTwist: "1:16", tunerType: "None" };
 
 export default function ProfilePage() {
-  const { user, rifles, addRifle, updateRifle, deleteRifle } = useApp();
+  const { user, rifles, addRifle, updateRifle, deleteRifle, getShotsSinceClean, getLastCleaning } = useApp();
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
   const [editingRifle, setEditingRifle] = useState<RifleProfile | null>(null);
   const [form, setForm] = useState<RifleFormData>(emptyForm);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showCleaningModal, setShowCleaningModal] = useState(false);
+  const [cleaningRifleId, setCleaningRifleId] = useState<string>("");
 
   const openAdd = () => {
     setEditingRifle(null);
@@ -150,6 +153,36 @@ export default function ProfilePage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Barrel Cleaning Badge */}
+                    {(() => {
+                      const shotsSinceClean = getShotsSinceClean(rifle.id);
+                      const lastClean = getLastCleaning(rifle.id);
+                      let statusColor = "text-green-400";
+                      let statusBg = "bg-green-500/10";
+                      if (shotsSinceClean <= 30) { statusColor = "text-blue-400"; statusBg = "bg-blue-500/10"; }
+                      else if (shotsSinceClean > 800) { statusColor = "text-red-400"; statusBg = "bg-red-500/10"; }
+                      else if (shotsSinceClean > 500) { statusColor = "text-yellow-400"; statusBg = "bg-yellow-500/10"; }
+
+                      return (
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${statusBg} ${statusColor}`}>
+                            {shotsSinceClean} since clean
+                          </span>
+                          {lastClean && (
+                            <span className="text-[10px] text-textSecondary">
+                              {lastClean.type === "deep_clean" ? "Deep" : lastClean.type === "ultrasonic" ? "Ultra" : "Swab"} • {new Date(lastClean.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            </span>
+                          )}
+                          <button
+                            onClick={() => { setCleaningRifleId(rifle.id); setShowCleaningModal(true); }}
+                            className="ml-auto flex items-center gap-1 text-[10px] font-bold text-cyan-400 active:opacity-50"
+                          >
+                            <Sparkles className="w-3 h-3" /> Clean
+                          </button>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Actions */}
@@ -190,6 +223,14 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Cleaning Modal */}
+      <CleaningModal
+        open={showCleaningModal}
+        onClose={() => setShowCleaningModal(false)}
+        preselectedRifleId={cleaningRifleId}
+      />
+
 
       {/* Settings */}
       <div className="space-y-2 mt-8">

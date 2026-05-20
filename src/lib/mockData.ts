@@ -59,12 +59,29 @@ export interface ShotLog {
   roundNotes?: string;      // per-round observation ("Flier", "Wind Gust", etc.)
   timestamp: string;
   photoUrl?: string;
+  // Per-shot weather stamp — captured at moment of logging
+  tempF?: number;           // temperature in °F
+  humidity?: number;        // relative humidity %
+  pressureInHg?: number;    // barometric pressure in inHg
+  densityAltitude?: number; // density altitude in feet
 }
 
 export interface UserProfile {
   id: string;
   fullName: string;
   email: string;
+}
+
+export type CleaningType = 'quick_swab' | 'deep_clean' | 'ultrasonic';
+
+export interface CleaningEvent {
+  id: string;
+  rifleId: string;
+  date: string;
+  type: CleaningType;
+  method?: string;
+  notes?: string;
+  shotCountAtClean: number;
 }
 
 // ---------- User ----------
@@ -181,31 +198,53 @@ export const mockSessions: Session[] = [
 
 // ---------- Shot Logs ----------
 export const mockShots: ShotLog[] = [
-  // Session 1 — Lapua Center-X, Vudoo V22
-  { id: "shot_001", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: true,  tunerSetting: 150, velocityFps: 1058, groupSizeMoa: 0.42, poiVertical: 1.2,  poiHorizontal: 0.3,  vSpreadIn: 0.45, hSpreadIn: 0.18, elevation: 12.5, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", roundNotes: "Cold bore — settled after", timestamp: "2026-04-20T09:00:00" },
-  { id: "shot_002", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 150, velocityFps: 1062, groupSizeMoa: 0.38, poiVertical: -0.5, poiHorizontal: 0.1,  vSpreadIn: 0.38, hSpreadIn: 0.12, elevation: 12.5, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T09:05:00" },
-  { id: "shot_003", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 200, velocityFps: 1055, groupSizeMoa: 0.35, poiVertical: 0.8,  poiHorizontal: -0.2, vSpreadIn: 0.35, hSpreadIn: 0.15, elevation: 12.5, elevationUnit: "moa", windSpeed: 3, windDirection: "9 o'clock", timestamp: "2026-04-20T09:10:00" },
-  { id: "shot_004", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 200, velocityFps: 1060, groupSizeMoa: 0.32, poiVertical: 0.3,  poiHorizontal: 0.0,  vSpreadIn: 0.30, hSpreadIn: 0.10, elevation: 12.5, elevationUnit: "moa", windSpeed: 3, windDirection: "9 o'clock", timestamp: "2026-04-20T09:15:00" },
-  { id: "shot_005", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 300, velocityFps: 1048, groupSizeMoa: 0.80, poiVertical: 2.1,  poiHorizontal: 0.5,  vSpreadIn: 0.82, hSpreadIn: 0.35, elevation: 12.5, elevationUnit: "moa", windSpeed: 6, windDirection: "10 o'clock", roundNotes: "Wind gust", timestamp: "2026-04-20T09:20:00" },
-  // Session 1 — SK Rifle Match, Vudoo V22
-  { id: "shot_006", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 150, velocityFps: 1072, groupSizeMoa: 0.55, poiVertical: 0.2,  poiHorizontal: 0.1,  vSpreadIn: 0.50, hSpreadIn: 0.30, elevation: 13.0, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T10:00:00" },
-  { id: "shot_007", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 150, velocityFps: 1068, groupSizeMoa: 0.48, poiVertical: -0.1, poiHorizontal: -0.1, vSpreadIn: 0.42, hSpreadIn: 0.28, elevation: 13.0, elevationUnit: "moa", windSpeed: 5, windDirection: "9 o'clock", timestamp: "2026-04-20T10:05:00" },
-  { id: "shot_008", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 200, velocityFps: 1075, groupSizeMoa: 0.40, poiVertical: 0.3,  poiHorizontal: 0.0,  vSpreadIn: 0.38, hSpreadIn: 0.20, elevation: 13.0, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T10:10:00" },
-  { id: "shot_009", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 200, velocityFps: 1070, groupSizeMoa: 0.36, poiVertical: -0.2, poiHorizontal: 0.2,  vSpreadIn: 0.32, hSpreadIn: 0.22, elevation: 13.0, elevationUnit: "moa", windSpeed: 5, windDirection: "10 o'clock", roundNotes: "Flier — pulled", timestamp: "2026-04-20T10:15:00" },
-  // Session 2 — Lapua Center-X tuner sweep, Vudoo V22
-  { id: "shot_010", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: true,  tunerSetting: 50,  velocityFps: 1045, groupSizeMoa: 0.75, poiVertical: 1.5,  poiHorizontal: -0.4, vSpreadIn: 0.72, hSpreadIn: 0.25, elevation: 12.5, elevationUnit: "moa", windSpeed: 8, windDirection: "12 o'clock", roundNotes: "Cold bore", timestamp: "2026-04-15T08:30:00" },
-  { id: "shot_011", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 100, velocityFps: 1052, groupSizeMoa: 0.60, poiVertical: 0.6,  poiHorizontal: 0.2,  vSpreadIn: 0.55, hSpreadIn: 0.22, elevation: 12.5, elevationUnit: "moa", windSpeed: 7, windDirection: "12 o'clock", timestamp: "2026-04-15T08:40:00" },
-  { id: "shot_012", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 250, velocityFps: 1050, groupSizeMoa: 0.45, poiVertical: -0.3, poiHorizontal: -0.1, vSpreadIn: 0.40, hSpreadIn: 0.15, elevation: 12.5, elevationUnit: "moa", windSpeed: 6, windDirection: "1 o'clock", timestamp: "2026-04-15T08:50:00" },
-  { id: "shot_013", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 350, velocityFps: 1058, groupSizeMoa: 0.90, poiVertical: 2.5,  poiHorizontal: 0.6,  vSpreadIn: 0.95, hSpreadIn: 0.40, elevation: 12.5, elevationUnit: "moa", windSpeed: 10, windDirection: "3 o'clock", roundNotes: "Wind gust — bad group", timestamp: "2026-04-15T09:00:00" },
-  { id: "shot_014", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 400, velocityFps: 1054, groupSizeMoa: 0.65, poiVertical: 0.9,  poiHorizontal: -0.3, vSpreadIn: 0.60, hSpreadIn: 0.28, elevation: 12.5, elevationUnit: "moa", windSpeed: 8, windDirection: "2 o'clock", timestamp: "2026-04-15T09:10:00" },
-  { id: "shot_015", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 450, velocityFps: 1056, groupSizeMoa: 0.38, poiVertical: 0.1,  poiHorizontal: 0.0,  vSpreadIn: 0.35, hSpreadIn: 0.12, elevation: 12.5, elevationUnit: "moa", windSpeed: 5, windDirection: "12 o'clock", timestamp: "2026-04-15T09:20:00" },
-  { id: "shot_016", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 500, velocityFps: 1051, groupSizeMoa: 0.40, poiVertical: -0.4, poiHorizontal: 0.1,  vSpreadIn: 0.38, hSpreadIn: 0.14, elevation: 12.5, elevationUnit: "moa", windSpeed: 5, windDirection: "12 o'clock", timestamp: "2026-04-15T09:30:00" },
-  // Session 3 — Eley Tenex, Vudoo V22
-  { id: "shot_017", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: true,  tunerSetting: 150, velocityFps: 1078, groupSizeMoa: 0.30, poiVertical: 0.4,  poiHorizontal: 0.1,  vSpreadIn: 0.28, hSpreadIn: 0.10, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", roundNotes: "Cold bore — excellent", timestamp: "2026-03-28T07:30:00" },
-  { id: "shot_018", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 150, velocityFps: 1082, groupSizeMoa: 0.28, poiVertical: -0.2, poiHorizontal: 0.0,  vSpreadIn: 0.25, hSpreadIn: 0.08, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", timestamp: "2026-03-28T07:35:00" },
-  { id: "shot_019", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 150, velocityFps: 1080, groupSizeMoa: 0.25, poiVertical: 0.1,  poiHorizontal: -0.1, vSpreadIn: 0.22, hSpreadIn: 0.10, elevation: 14.0, elevationUnit: "moa", windSpeed: 1, windDirection: "6 o'clock", timestamp: "2026-03-28T07:40:00" },
-  { id: "shot_020", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 200, velocityFps: 1076, groupSizeMoa: 0.32, poiVertical: 0.3,  poiHorizontal: 0.2,  vSpreadIn: 0.30, hSpreadIn: 0.18, elevation: 14.0, elevationUnit: "moa", windSpeed: 3, windDirection: "7 o'clock", timestamp: "2026-03-28T07:50:00" },
-  { id: "shot_021", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 200, velocityFps: 1079, groupSizeMoa: 0.27, poiVertical: -0.1, poiHorizontal: 0.0,  vSpreadIn: 0.24, hSpreadIn: 0.09, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", timestamp: "2026-03-28T07:55:00" },
+  // Session 1 — Lapua Center-X, Vudoo V22  (68°F, 55%, 29.92 inHg, DA 1850)
+  { id: "shot_001", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: true,  tunerSetting: 150, velocityFps: 1058, groupSizeMoa: 0.42, poiVertical: 1.2,  poiHorizontal: 0.3,  vSpreadIn: 0.45, hSpreadIn: 0.18, elevation: 12.5, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", roundNotes: "Cold bore — settled after", timestamp: "2026-04-20T09:00:00", tempF: 66, humidity: 58, pressureInHg: 29.92, densityAltitude: 1780 },
+  { id: "shot_002", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 150, velocityFps: 1062, groupSizeMoa: 0.38, poiVertical: -0.5, poiHorizontal: 0.1,  vSpreadIn: 0.38, hSpreadIn: 0.12, elevation: 12.5, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T09:05:00", tempF: 67, humidity: 57, pressureInHg: 29.92, densityAltitude: 1810 },
+  { id: "shot_003", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 200, velocityFps: 1055, groupSizeMoa: 0.35, poiVertical: 0.8,  poiHorizontal: -0.2, vSpreadIn: 0.35, hSpreadIn: 0.15, elevation: 12.5, elevationUnit: "moa", windSpeed: 3, windDirection: "9 o'clock", timestamp: "2026-04-20T09:10:00", tempF: 67, humidity: 56, pressureInHg: 29.91, densityAltitude: 1830 },
+  { id: "shot_004", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 200, velocityFps: 1060, groupSizeMoa: 0.32, poiVertical: 0.3,  poiHorizontal: 0.0,  vSpreadIn: 0.30, hSpreadIn: 0.10, elevation: 12.5, elevationUnit: "moa", windSpeed: 3, windDirection: "9 o'clock", timestamp: "2026-04-20T09:15:00", tempF: 68, humidity: 55, pressureInHg: 29.91, densityAltitude: 1850 },
+  { id: "shot_005", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 300, velocityFps: 1048, groupSizeMoa: 0.80, poiVertical: 2.1,  poiHorizontal: 0.5,  vSpreadIn: 0.82, hSpreadIn: 0.35, elevation: 12.5, elevationUnit: "moa", windSpeed: 6, windDirection: "10 o'clock", roundNotes: "Wind gust", timestamp: "2026-04-20T09:20:00", tempF: 68, humidity: 54, pressureInHg: 29.91, densityAltitude: 1860 },
+  // Session 1 — SK Rifle Match, Vudoo V22  (warming up to 70°F by 10am)
+  { id: "shot_006", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 150, velocityFps: 1072, groupSizeMoa: 0.55, poiVertical: 0.2,  poiHorizontal: 0.1,  vSpreadIn: 0.50, hSpreadIn: 0.30, elevation: 13.0, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T10:00:00", tempF: 70, humidity: 52, pressureInHg: 29.90, densityAltitude: 1920 },
+  { id: "shot_007", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 150, velocityFps: 1068, groupSizeMoa: 0.48, poiVertical: -0.1, poiHorizontal: -0.1, vSpreadIn: 0.42, hSpreadIn: 0.28, elevation: 13.0, elevationUnit: "moa", windSpeed: 5, windDirection: "9 o'clock", timestamp: "2026-04-20T10:05:00", tempF: 70, humidity: 51, pressureInHg: 29.90, densityAltitude: 1930 },
+  { id: "shot_008", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 200, velocityFps: 1075, groupSizeMoa: 0.40, poiVertical: 0.3,  poiHorizontal: 0.0,  vSpreadIn: 0.38, hSpreadIn: 0.20, elevation: 13.0, elevationUnit: "moa", windSpeed: 4, windDirection: "9 o'clock", timestamp: "2026-04-20T10:10:00", tempF: 71, humidity: 50, pressureInHg: 29.90, densityAltitude: 1950 },
+  { id: "shot_009", sessionId: "sess_001", rifleId: "rifle_001", ammoId: "ammo_002", isColdBore: false, tunerSetting: 200, velocityFps: 1070, groupSizeMoa: 0.36, poiVertical: -0.2, poiHorizontal: 0.2,  vSpreadIn: 0.32, hSpreadIn: 0.22, elevation: 13.0, elevationUnit: "moa", windSpeed: 5, windDirection: "10 o'clock", roundNotes: "Flier — pulled", timestamp: "2026-04-20T10:15:00", tempF: 71, humidity: 50, pressureInHg: 29.89, densityAltitude: 1960 },
+  // Session 2 — Lapua Center-X tuner sweep, Vudoo V22  (72°F, 48%, 29.85 inHg, DA 2100)
+  { id: "shot_010", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: true,  tunerSetting: 50,  velocityFps: 1045, groupSizeMoa: 0.75, poiVertical: 1.5,  poiHorizontal: -0.4, vSpreadIn: 0.72, hSpreadIn: 0.25, elevation: 12.5, elevationUnit: "moa", windSpeed: 8, windDirection: "12 o'clock", roundNotes: "Cold bore", timestamp: "2026-04-15T08:30:00", tempF: 69, humidity: 52, pressureInHg: 29.86, densityAltitude: 2020 },
+  { id: "shot_011", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 100, velocityFps: 1052, groupSizeMoa: 0.60, poiVertical: 0.6,  poiHorizontal: 0.2,  vSpreadIn: 0.55, hSpreadIn: 0.22, elevation: 12.5, elevationUnit: "moa", windSpeed: 7, windDirection: "12 o'clock", timestamp: "2026-04-15T08:40:00", tempF: 70, humidity: 50, pressureInHg: 29.85, densityAltitude: 2060 },
+  { id: "shot_012", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 250, velocityFps: 1050, groupSizeMoa: 0.45, poiVertical: -0.3, poiHorizontal: -0.1, vSpreadIn: 0.40, hSpreadIn: 0.15, elevation: 12.5, elevationUnit: "moa", windSpeed: 6, windDirection: "1 o'clock", timestamp: "2026-04-15T08:50:00", tempF: 71, humidity: 49, pressureInHg: 29.85, densityAltitude: 2080 },
+  { id: "shot_013", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 350, velocityFps: 1058, groupSizeMoa: 0.90, poiVertical: 2.5,  poiHorizontal: 0.6,  vSpreadIn: 0.95, hSpreadIn: 0.40, elevation: 12.5, elevationUnit: "moa", windSpeed: 10, windDirection: "3 o'clock", roundNotes: "Wind gust — bad group", timestamp: "2026-04-15T09:00:00", tempF: 72, humidity: 48, pressureInHg: 29.85, densityAltitude: 2100 },
+  { id: "shot_014", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 400, velocityFps: 1054, groupSizeMoa: 0.65, poiVertical: 0.9,  poiHorizontal: -0.3, vSpreadIn: 0.60, hSpreadIn: 0.28, elevation: 12.5, elevationUnit: "moa", windSpeed: 8, windDirection: "2 o'clock", timestamp: "2026-04-15T09:10:00", tempF: 73, humidity: 47, pressureInHg: 29.84, densityAltitude: 2130 },
+  { id: "shot_015", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 450, velocityFps: 1056, groupSizeMoa: 0.38, poiVertical: 0.1,  poiHorizontal: 0.0,  vSpreadIn: 0.35, hSpreadIn: 0.12, elevation: 12.5, elevationUnit: "moa", windSpeed: 5, windDirection: "12 o'clock", timestamp: "2026-04-15T09:20:00", tempF: 73, humidity: 46, pressureInHg: 29.84, densityAltitude: 2140 },
+  { id: "shot_016", sessionId: "sess_002", rifleId: "rifle_001", ammoId: "ammo_001", isColdBore: false, tunerSetting: 500, velocityFps: 1051, groupSizeMoa: 0.40, poiVertical: -0.4, poiHorizontal: 0.1,  vSpreadIn: 0.38, hSpreadIn: 0.14, elevation: 12.5, elevationUnit: "moa", windSpeed: 5, windDirection: "12 o'clock", timestamp: "2026-04-15T09:30:00", tempF: 74, humidity: 45, pressureInHg: 29.84, densityAltitude: 2160 },
+  // Session 3 — Eley Tenex, Vudoo V22  (52°F, 70%, 30.05 inHg, DA 3200)
+  { id: "shot_017", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: true,  tunerSetting: 150, velocityFps: 1078, groupSizeMoa: 0.30, poiVertical: 0.4,  poiHorizontal: 0.1,  vSpreadIn: 0.28, hSpreadIn: 0.10, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", roundNotes: "Cold bore — excellent", timestamp: "2026-03-28T07:30:00", tempF: 50, humidity: 72, pressureInHg: 30.05, densityAltitude: 3150 },
+  { id: "shot_018", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 150, velocityFps: 1082, groupSizeMoa: 0.28, poiVertical: -0.2, poiHorizontal: 0.0,  vSpreadIn: 0.25, hSpreadIn: 0.08, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", timestamp: "2026-03-28T07:35:00", tempF: 51, humidity: 71, pressureInHg: 30.05, densityAltitude: 3170 },
+  { id: "shot_019", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 150, velocityFps: 1080, groupSizeMoa: 0.25, poiVertical: 0.1,  poiHorizontal: -0.1, vSpreadIn: 0.22, hSpreadIn: 0.10, elevation: 14.0, elevationUnit: "moa", windSpeed: 1, windDirection: "6 o'clock", timestamp: "2026-03-28T07:40:00", tempF: 52, humidity: 70, pressureInHg: 30.04, densityAltitude: 3190 },
+  { id: "shot_020", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 200, velocityFps: 1076, groupSizeMoa: 0.32, poiVertical: 0.3,  poiHorizontal: 0.2,  vSpreadIn: 0.30, hSpreadIn: 0.18, elevation: 14.0, elevationUnit: "moa", windSpeed: 3, windDirection: "7 o'clock", timestamp: "2026-03-28T07:50:00", tempF: 53, humidity: 69, pressureInHg: 30.04, densityAltitude: 3210 },
+  { id: "shot_021", sessionId: "sess_003", rifleId: "rifle_001", ammoId: "ammo_003", isColdBore: false, tunerSetting: 200, velocityFps: 1079, groupSizeMoa: 0.27, poiVertical: -0.1, poiHorizontal: 0.0,  vSpreadIn: 0.24, hSpreadIn: 0.09, elevation: 14.0, elevationUnit: "moa", windSpeed: 2, windDirection: "6 o'clock", timestamp: "2026-03-28T07:55:00", tempF: 54, humidity: 68, pressureInHg: 30.03, densityAltitude: 3230 },
+];
+
+// ---------- Barrel Cleaning Log ----------
+export const mockCleanings: CleaningEvent[] = [
+  {
+    id: "clean_001",
+    rifleId: "rifle_001",
+    date: "2026-03-15",
+    type: "deep_clean",
+    method: "Tipton rod + Boretech Rimfire Blend",
+    notes: "Full deep clean before lot testing season. Bore was heavy copper after 650 rounds.",
+    shotCountAtClean: 0,
+  },
+  {
+    id: "clean_002",
+    rifleId: "rifle_001",
+    date: "2026-04-18",
+    type: "quick_swab",
+    method: "BoreSnake 2 passes",
+    notes: "Quick swab between sessions. Barrel still shooting well.",
+    shotCountAtClean: 16,
+  },
 ];
 
 // ---------- Derived / Helper Functions ----------

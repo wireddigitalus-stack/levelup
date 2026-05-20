@@ -5,12 +5,14 @@ import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell, AreaChart, Area
 } from "recharts";
-import { Settings2, Activity, Target, Calendar, ChevronRight, Thermometer, Shield, Crosshair } from "lucide-react";
+import { Settings2, Activity, Target, Calendar, ChevronRight, Thermometer, Shield, Crosshair, Sparkles } from "lucide-react";
+import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { getConfidenceProfile, getBCForAmmo, getTransonicRange } from "@/lib/ballistics";
 import WeatherCard from "@/components/weather/WeatherCard";
 import PageHeader from "@/components/layout/PageHeader";
 import DNAMatchScore from "@/components/DNAMatchScore";
+import CleaningModal from "@/components/CleaningModal";
 
 export default function DashboardPage() {
   const {
@@ -30,7 +32,11 @@ export default function DashboardPage() {
     getVerticalData,
     getShotCountForLot,
     getGrade,
+    getShotsSinceClean,
+    getLastCleaning,
   } = useApp();
+
+  const [showCleaningModal, setShowCleaningModal] = useState(false);
 
   const sd = getSD(selectedAmmoId);
   const es = getES(selectedAmmoId);
@@ -114,6 +120,76 @@ export default function DashboardPage() {
           </select>
         </div>
       </div>
+
+      {/* Barrel Condition Badge */}
+      {(() => {
+        const shotsSinceClean = getShotsSinceClean(selectedRifleId);
+        const lastClean = getLastCleaning(selectedRifleId);
+        const selectedRifle = rifles.find((r) => r.id === selectedRifleId);
+
+        // Barrel condition thresholds (rimfire)
+        let status: { label: string; color: string; bg: string; emoji: string };
+        if (shotsSinceClean <= 30) {
+          status = { label: "Fouling In", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", emoji: "🔵" };
+        } else if (shotsSinceClean <= 500) {
+          status = { label: "Sweet Spot", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", emoji: "🟢" };
+        } else if (shotsSinceClean <= 800) {
+          status = { label: "Monitor", color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20", emoji: "🟡" };
+        } else {
+          status = { label: "Clean Soon", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20", emoji: "🔴" };
+        }
+
+        const cleanTypeLabel = (t: string) =>
+          t === "deep_clean" ? "Deep Clean" : t === "ultrasonic" ? "Ultrasonic" : "Quick Swab";
+
+        return (
+          <div className={`ios-card py-3 px-4 border ${status.bg}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="text-center">
+                  <p className="text-2xl font-black tabular-nums">{shotsSinceClean}</p>
+                  <p className="text-[9px] text-textSecondary uppercase tracking-wider">since clean</p>
+                </div>
+                <div className="w-px h-8 bg-border" />
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs">{status.emoji}</span>
+                    <span className={`text-xs font-bold uppercase tracking-wider ${status.color}`}>
+                      {status.label}
+                    </span>
+                  </div>
+                  {lastClean ? (
+                    <p className="text-[10px] text-textSecondary mt-0.5">
+                      {cleanTypeLabel(lastClean.type)} • {new Date(lastClean.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-textSecondary mt-0.5">No cleanings logged</p>
+                  )}
+                  {selectedRifle && (
+                    <p className="text-[10px] text-textSecondary">
+                      {selectedRifle.make} {selectedRifle.model}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCleaningModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 active:scale-95 transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-xs font-bold text-cyan-400">Clean</span>
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Cleaning Modal */}
+      <CleaningModal
+        open={showCleaningModal}
+        onClose={() => setShowCleaningModal(false)}
+        preselectedRifleId={selectedRifleId}
+      />
 
       {/* DNA Match Score + ES/SD Cards */}
       <div className="grid grid-cols-3 gap-3">
